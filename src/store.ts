@@ -25,6 +25,13 @@ export type Day = {
   blocks: Block[]
 }
 
+export type Memory = {
+  id: string
+  text: string
+  createdAt: number
+  type: 'franja' | 'duracion' | 'arrastre'
+}
+
 type FocusState = {
   tasks: Task[]
   days: Record<string, Day>
