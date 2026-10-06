@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Check, ChevronRight, CircleHelp, Clock3, Pause, Play, Plus, RotateCcw, Smartphone, Watch } from 'lucide-react'
+import { PlanChat } from './components/PlanChat'
 import { Block, dayKey, useFocusStore } from './store'
 
 const formatTime = (seconds: number) => {
@@ -200,6 +201,7 @@ function FocusScreen() {
             <div className="panel-footer"><span>UN PASO A LA VEZ</span><span>·</span><span>VAS BIEN</span></div>
           </aside>}
         </div>
+        {!isMobile && !isWatch && <PlanChat />}
       </section>
     </main>
   )
