@@ -15,3 +15,4 @@ App de foco con IA simulada. React, TypeScript y Vite. Se despliega en Vercel.
 - src/ai: contrato AIProvider, reglas puras y MockProvider.
 - La IA propone, la persona decide: lo propuesto no entra en el día sin aceptarlo.
 - El timer guarda endsAt, no cuenta segundos.
+Lee SPEC.md antes de cualquier tarea: es la fuente de verdad del producto.
