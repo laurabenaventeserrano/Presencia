@@ -28,6 +28,7 @@ function Presencia({ device }: { device: Device }) {
   const durationMinutes = useFocusStore((state) => state.durationMinutes)
   const addTask = useFocusStore((state) => state.addTask)
   const setTaskMinutes = useFocusStore((state) => state.setTaskMinutes)
+  const toggleTaskDone = useFocusStore((state) => state.toggleTaskDone)
   const start = useFocusStore((state) => state.start)
   const startBlock = useFocusStore((state) => state.startBlock)
   const pause = useFocusStore((state) => state.pause)
@@ -103,7 +104,6 @@ function Presencia({ device }: { device: Device }) {
     else if (phase === 'listo') { start(); setDoneTitle(null) }
   }
 
-  const completedTaskIds = new Set(today.blocks.flatMap((block) => block.status === 'completed' && block.taskId ? [block.taskId] : []))
 
   // Sin bloque ni resumen pendiente, En curso no tiene sentido fuera del reloj.
   const showHoy = !isWatch && (screen === 'hoy' || (screen === 'curso' && phase === 'listo'))
@@ -115,11 +115,11 @@ function Presencia({ device }: { device: Device }) {
         ? <Hoy
           device={device === 'movil' ? 'movil' : 'ordenador'}
           tasks={tasks}
-          doneTaskIds={completedTaskIds}
           busy={Boolean(activeBlock)}
           onStart={handleStart}
           onSave={handleSave}
           onStartTask={handleStartTask}
+          onToggleDone={toggleTaskDone}
         />
         : screen === 'resp'
           ? <Respirar onClose={() => setScreen('curso')} />

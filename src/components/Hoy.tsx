@@ -11,16 +11,16 @@ import './Hoy.css'
 type HoyProps = {
   device: 'ordenador' | 'movil'
   tasks: Task[]
-  doneTaskIds: ReadonlySet<string>
   busy: boolean
   onStart: (row: ProposalRow) => void
   onSave: (row: ProposalRow) => void
   onStartTask: (task: Task) => void
+  onToggleDone: (taskId: string) => void
 }
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
 
-export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStartTask }: HoyProps) {
+export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone }: HoyProps) {
   const provider = useMemo(() => createMockProvider(), [])
   const { text, proposedBlocks, status, start, cancel } = usePlanStream(provider)
   const [intention, setIntention] = useState('')
@@ -112,15 +112,13 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
         {tasks.length === 0
           ? <p className="vacio">No hay tareas guardadas.</p>
           : <ul className="lista">
-            {tasks.map((task) => {
-              const done = doneTaskIds.has(task.id)
-              return <li className="fila" key={task.id}>
-                <span className={done ? 'fila__nombre fila__nombre--hecha' : 'fila__nombre'}>{task.title}</span>
-                <div className="fila__acciones">
-                  <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => onStartTask(task)}>{busy ? BUSY_LABEL : 'Empezar'}</button>
-                </div>
-              </li>
-            })}
+            {tasks.map((task) => <li className="fila" key={task.id}>
+              <span className={task.done ? 'fila__nombre fila__nombre--hecha' : 'fila__nombre'}>{task.title}</span>
+              <div className="fila__acciones">
+                <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => onStartTask(task)}>{busy ? BUSY_LABEL : 'Empezar'}</button>
+                <button className="boton" type="button" aria-pressed={task.done} onClick={() => onToggleDone(task.id)}>Hecha</button>
+              </div>
+            </li>)}
           </ul>}
       </div>
 
