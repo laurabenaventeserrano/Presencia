@@ -1,6 +1,5 @@
-import type { Task } from '../store'
 import { extractIntents, isUnderstood, kindKeywords, matchTasks, normalize, parseBudget } from './intent'
-import type { PlanInput, ProposedBlock, TaskKind } from './types'
+import type { PlanInput, PlanTask, ProposedBlock, TaskKind } from './types'
 
 const BREAK_MINUTES = 5
 
@@ -15,10 +14,10 @@ export const kindOf = (title: string): TaskKind => {
 
 export const minutesFor: Record<TaskKind, number> = { deep: 50, review: 25, admin: 15 }
 
-export const orderByEnergy = (tasks: readonly Task[]): Task[] =>
+export const orderByEnergy = (tasks: readonly PlanTask[]): PlanTask[] =>
   [...tasks].sort((a, b) => energyRank[kindOf(a.title)] - energyRank[kindOf(b.title)])
 
-const tasksForPlan = (intention: string, pending: Task[]): Task[] => {
+const tasksForPlan = (intention: string, pending: PlanTask[]): PlanTask[] => {
   const intents = extractIntents(intention)
   if (intents.length === 0) return pending
   return matchTasks(intents.filter((intent) => isUnderstood(intent, pending)), pending)
@@ -41,7 +40,7 @@ const withBreaks = (focusBlocks: ProposedBlock[]): ProposedBlock[] =>
 export const buildBlocks = (input: PlanInput, doneTaskIds: ReadonlySet<string> = new Set()): ProposedBlock[] => {
   const pending = input.tasks.filter((task) => !doneTaskIds.has(task.id))
   const focusBlocks = orderByEnergy(tasksForPlan(input.intention, pending)).map((task): ProposedBlock => (
-    { kind: 'focus', minutes: minutesFor[kindOf(task.title)], taskId: task.id }
+    { kind: 'focus', minutes: minutesFor[kindOf(task.title)], title: task.title, taskId: task.id }
   ))
   return withBreaks(fitBudget(focusBlocks, parseBudget(input.intention)))
 }

@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { Task } from '../store'
 import { buildBlocks, kindOf, minutesFor, orderByEnergy } from './rules'
-import type { ProposedBlock } from './types'
+import type { PlanTask, ProposedBlock } from './types'
 
-const task = (id: string, title: string): Task => ({ id, title, createdAt: 0 })
+const task = (id: string, title: string): PlanTask => ({ id, title })
 
 describe('kindOf', () => {
   it('clasifica "diseñar la pantalla" como deep y "responder emails" como admin', () => {
@@ -50,9 +49,9 @@ describe('buildBlocks', () => {
     const tasks = [task('a', 'Responder emails'), task('b', 'Escribir el artículo'), task('c', 'Revisar el informe')]
     const blocks = buildBlocks({ intention: '', tasks, memory: [] }, new Set(['c']))
     expect(blocks).toEqual([
-      { kind: 'focus', minutes: 50, taskId: 'b' },
+      { kind: 'focus', minutes: 50, title: 'Escribir el artículo', taskId: 'b' },
       { kind: 'break', minutes: 5 },
-      { kind: 'focus', minutes: 15, taskId: 'a' },
+      { kind: 'focus', minutes: 15, title: 'Responder emails', taskId: 'a' },
     ])
     expect(blocks[blocks.length - 1].kind).toBe('focus')
   })
@@ -71,16 +70,16 @@ describe('buildBlocks', () => {
   it('dos frases distintas dan planes distintos', () => {
     const first = plan('Quiero escribir la propuesta')
     const second = plan('Tengo que pagar las facturas y responder emails')
-    expect(first).toEqual([{ kind: 'focus', minutes: 50, taskId: 'write' }])
+    expect(first).toEqual([{ kind: 'focus', minutes: 50, title: 'Escribir la propuesta del proyecto', taskId: 'write' }])
     expect(second).toEqual([
-      { kind: 'focus', minutes: 15, taskId: 'bills' },
+      { kind: 'focus', minutes: 15, title: 'Pagar las facturas del mes', taskId: 'bills' },
       { kind: 'break', minutes: 5 },
-      { kind: 'focus', minutes: 15, taskId: 'email' },
+      { kind: 'focus', minutes: 15, title: 'Responder emails pendientes', taskId: 'email' },
     ])
   })
 
   it('una intención entendida sin tarea parecida crea una tarea temporal', () => {
-    expect(plan('llamar al banco')).toEqual([{ kind: 'focus', minutes: 15, taskId: 'intent-0' }])
+    expect(plan('llamar al banco')).toEqual([{ kind: 'focus', minutes: 15, title: 'llamar al banco', taskId: 'intent-0' }])
   })
 
   it('"fjnewj" da una lista vacía', () => {
@@ -92,7 +91,7 @@ describe('buildBlocks', () => {
     expect(focusMinutes(plan(intention))).toBeGreaterThan(60)
     const limited = plan(`${intention}, tengo una hora`)
     expect(focusMinutes(limited)).toBeLessThanOrEqual(60)
-    expect(limited).toEqual([{ kind: 'focus', minutes: 50, taskId: 'design' }])
+    expect(limited).toEqual([{ kind: 'focus', minutes: 50, title: 'Diseñar la pantalla de inicio', taskId: 'design' }])
   })
 
   it('con solo un presupuesto usa las tareas pendientes recortadas', () => {

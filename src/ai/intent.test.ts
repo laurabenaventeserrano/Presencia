@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { Task } from '../store'
 import { extractIntents, isUnderstood, matchTasks, parseBudget } from './intent'
+import type { PlanTask } from './types'
 
-const task = (id: string, title: string): Task => ({ id, title, createdAt: 0 })
+const task = (id: string, title: string): PlanTask => ({ id, title })
 
 const tasks = [task('design', 'Diseñar la pantalla de inicio'), task('email', 'Responder emails pendientes')]
 
@@ -40,7 +40,7 @@ describe('matchTasks', () => {
 
   it('crea una tarea temporal si no hay coincidencias', () => {
     expect(matchTasks(['responder emails', 'llamar al banco'], tasks))
-      .toEqual([tasks[1], { id: 'intent-1', title: 'llamar al banco', createdAt: 0 }])
+      .toEqual([tasks[1], { id: 'intent-1', title: 'llamar al banco' }])
   })
 
   it('no repite una tarea si dos intenciones apuntan a ella', () => {

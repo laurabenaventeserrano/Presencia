@@ -9,9 +9,9 @@ const instantSleep = () => Promise.resolve()
 const input: PlanInput = {
   intention: 'Cerrar el diseño de la pantalla principal',
   tasks: [
-    { id: 'a', title: 'Responder emails', createdAt: 0 },
-    { id: 'b', title: 'Diseñar la pantalla', createdAt: 0 },
-    { id: 'c', title: 'Revisar el feedback', createdAt: 0 },
+    { id: 'a', title: 'Responder emails' },
+    { id: 'b', title: 'Diseñar la pantalla' },
+    { id: 'c', title: 'Revisar el feedback' },
   ],
   memory: [],
 }

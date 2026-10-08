@@ -6,8 +6,8 @@ import type { PlanInput } from './types'
 const inputFor = (intention: string): PlanInput => ({
   intention,
   tasks: [
-    { id: 'design', title: 'Diseñar la pantalla de inicio', createdAt: 0 },
-    { id: 'email', title: 'Responder emails pendientes', createdAt: 0 },
+    { id: 'design', title: 'Diseñar la pantalla de inicio' },
+    { id: 'email', title: 'Responder emails pendientes' },
   ],
   memory: [],
 })
