@@ -41,13 +41,13 @@ Tareas
 - La propuesta es un **borrador editable**: se puede cambiar el título y los minutos (de 5 en 5, mínimo 5, máximo 120). Las ediciones viven en estado local, no en el store.
 - **Empezar** crea un bloque con los minutos editados y arranca el timer. La fila desaparece de la propuesta.
 - **Guardar** crea una tarea persistida. La fila desaparece de la propuesta.
-- Si ya hay un bloque en marcha, Empezar queda desactivado con el texto "Ya hay un bloque en marcha".
+- Si ya hay un bloque en marcha o en pausa, la tarjeta empieza con una línea fina con su título y el tiempo restante, que lleva de vuelta a En curso. Empezar queda desactivado con el texto "Ya hay un bloque en marcha". Motivo: puedes mirar o ajustar el día sin cortar el bloque, y la pantalla explica por qué no puedes empezar otro.
 - Los bloques de pausa de la IA no se muestran como propuesta en esta fase.
 - Si la IA no entiende la frase, responde "No te he entendido. ¿Qué quieres hacer hoy? Por ejemplo: diseñar la pantalla y responder emails." y no propone nada.
 
 ### En curso
 
-Solo el título del bloque, el tiempo restante en grande y dos controles: **Pausar** y **Terminar**. Todo lo demás desaparece.
+Solo el título del bloque, el tiempo restante en grande y dos controles: **Pausar** y **Terminar**. Todo lo demás desaparece, salvo un control de texto **Hoy** arriba a la izquierda que lleva a Hoy sin terminar el bloque (no existe en el reloj, que no tiene pantalla Hoy). Motivo: volver a Hoy no debe obligar a cortar el foco.
 
 ### Fin de bloque (modo flujo)
 

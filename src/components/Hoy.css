@@ -10,6 +10,10 @@
 .campo__input:disabled { color: var(--secundario); }
 
 .tarjeta { width: 100%; display: flex; flex-direction: column; gap: var(--pantalla-gap); padding: var(--espacio-6); border-radius: var(--radio-tarjeta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); }
+.en-marcha { width: 100%; min-height: var(--control-fila); display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); padding: 0; border: 0; border-radius: var(--radio-boton); color: var(--tinta); background: transparent; text-align: start; transition: opacity var(--transicion); }
+.en-marcha:hover { opacity: var(--opacidad-hover); }
+.en-marcha__titulo { min-width: 0; font-size: var(--texto-item); font-weight: var(--peso-ligero); overflow-wrap: anywhere; }
+.en-marcha__tiempo { flex: none; color: var(--secundario); font-size: var(--texto-secundario); font-variant-numeric: tabular-nums; }
 .etiqueta { color: var(--secundario); font-size: var(--texto-etiqueta); font-weight: var(--peso-normal); }
 .vacio { color: var(--secundario); font-size: var(--texto-secundario); }
 .separador { height: var(--linea); margin: 0; border: 0; background: var(--suave); }

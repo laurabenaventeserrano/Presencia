@@ -12,6 +12,7 @@ type EnCursoProps = {
   onClose?: () => void
   onToggle?: () => void
   onBreathe: () => void
+  onToday?: () => void
 }
 
 const toggleLabel: Record<FocusPhase, string> = {
@@ -21,9 +22,10 @@ const toggleLabel: Record<FocusPhase, string> = {
   'hecho': 'Reanudar',
 }
 
-export function EnCurso({ title, seconds, phase, closeLabel, onClose, onToggle, onBreathe }: EnCursoProps) {
+export function EnCurso({ title, seconds, phase, closeLabel, onClose, onToggle, onBreathe, onToday }: EnCursoProps) {
   return (
     <section className="foco" aria-label="En curso">
+      {onToday && <button className="foco__hoy" type="button" onClick={onToday}>Hoy</button>}
       <div className="caja-orbe caja-orbe--curso">
         <Orb state={focusOrb(phase)} size="curso" active={phase === 'en-marcha'} />
       </div>

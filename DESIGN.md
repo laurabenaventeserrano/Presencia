@@ -128,6 +128,18 @@ components:
     typography: "{typography.enlace}"
     padding: "0 20px"
     height: "44px"
+  volver-hoy:
+    backgroundColor: "transparent"
+    textColor: "{colors.secundario}"
+    typography: "{typography.etiqueta}"
+    rounded: "{rounded.boton}"
+    padding: "0 12px"
+    height: "44px"
+  linea-en-marcha:
+    backgroundColor: "transparent"
+    textColor: "{colors.tinta}"
+    typography: "{typography.item}"
+    height: "44px"
   punto:
     backgroundColor: "{colors.punto-apagado}"
     rounded: "{rounded.circulo}"
@@ -215,8 +227,8 @@ Una paleta neutra de grises azulados fríos para toda la interfaz, y siete paste
 
 ## Layout
 
-- **Hoy:** una columna centrada de 560 px como máximo. Padding de 32 / 24 / 48 (20 / 20 / 32 en móvil) y 20 px entre bloques. Orden fijo: caja del orbe (200 px), título, respuesta, campo y tarjeta.
-- **En curso y Respirar:** todo centrado en los dos ejes, con 20 px entre elementos (6 px en reloj). La caja del orbe mide 200 / 140 / 60 en En curso y 300 / 220 / 110 en Respirar. En Respirar, el botón cerrar se fija arriba a la izquierda, a 24 px (8 px en reloj).
+- **Hoy:** una columna centrada de 560 px como máximo. Padding de 32 / 24 / 48 (20 / 20 / 32 en móvil) y 20 px entre bloques. Orden fijo: caja del orbe (200 px), título, respuesta, campo y tarjeta. Con un bloque en marcha o en pausa, la tarjeta empieza con la línea del bloque en marcha y un separador.
+- **En curso y Respirar:** todo centrado en los dos ejes, con 20 px entre elementos (6 px en reloj). La caja del orbe mide 200 / 140 / 60 en En curso y 300 / 220 / 110 en Respirar. En Respirar, el botón cerrar se fija arriba a la izquierda, a 24 px (8 px en reloj). En En curso, ese mismo sitio lo ocupa «Hoy» (salvo en el reloj, que no tiene Hoy).
 - **Dispositivos:**
   - Ordenador: 1280 × 800.
   - Móvil: 390 × 844 con marco de radio 44. Por debajo de 600 px se usan los valores de móvil.
@@ -275,6 +287,12 @@ Los iconos llevan un trazo de 1,5 px con extremos redondeados, se dibujan a 20 p
 
 ### Enlace
 - **Style (`enlace`):** «Respirar», en secundario y subrayado, con área táctil de 44 px.
+
+### Volver a Hoy y línea del bloque en marcha
+Motivo: así puedes mirar o ajustar el día sin cortar el bloque, y la propia pantalla Hoy te explica por qué Empezar está bloqueado.
+- **Volver a Hoy (`volver-hoy`):** control de texto «Hoy» en etiqueta y secundario, sin fondo ni subrayado, arriba a la izquierda de En curso. Área táctil de 44 px y el foco de siempre. Pasa a tinta al pasar el cursor. Lleva a Hoy sin terminar el bloque.
+- **Línea del bloque en marcha (`linea-en-marcha`):** primera fila de la tarjeta de Hoy mientras hay un bloque en marcha o en pausa. Título del bloque (ítem) a la izquierda y tiempo restante (secundario, números tabulares) a la derecha, 44 px de alto, sin fondo. Debajo, el separador. Toda la línea lleva de vuelta a En curso.
+- Mientras tanto, los «Empezar» de las filas se desactivan (opacidad de deshabilitado) y dicen «Ya hay un bloque en marcha».
 
 ### Orbe (componente distintivo)
 - Tres manchas circulares al 74 % del tamaño, con opacidad de .95, dentro de un contenedor redondo y desenfocadas al 16 % del tamaño. Sin borde ni sombra.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PlanTask } from '../ai/types'
-import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, removeRow, rowReady, saveAction, stepMinutes, updateRow } from './logic'
+import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, removeRow, rowReady, saveAction, stepMinutes, updateRow, visibleScreen } from './logic'
 
 describe('formatTime', () => {
   it('formatea minutos y segundos con dos cifras', () => {
@@ -90,6 +90,25 @@ describe('saveAction', () => {
   it('una fila que ya es una tarea solo actualiza sus minutos', () => {
     expect(saveAction({ key: 'k', title: 'Leer', minutes: 35, taskId: 'a' }))
       .toEqual({ type: 'actualizar', taskId: 'a', minutes: 35 })
+  })
+})
+
+describe('visibleScreen', () => {
+  it('deja ver Hoy con un bloque en marcha o en pausa', () => {
+    expect(visibleScreen('hoy', 'en-marcha', false)).toBe('hoy')
+    expect(visibleScreen('hoy', 'en-pausa', false)).toBe('hoy')
+    expect(visibleScreen('curso', 'en-marcha', false)).toBe('curso')
+  })
+
+  it('sin bloque, En curso cede el sitio a Hoy', () => {
+    expect(visibleScreen('curso', 'listo', false)).toBe('hoy')
+    expect(visibleScreen('curso', 'hecho', false)).toBe('curso')
+  })
+
+  it('el reloj nunca muestra Hoy', () => {
+    expect(visibleScreen('hoy', 'en-marcha', true)).toBe('curso')
+    expect(visibleScreen('curso', 'listo', true)).toBe('curso')
+    expect(visibleScreen('resp', 'en-marcha', true)).toBe('resp')
   })
 })
 

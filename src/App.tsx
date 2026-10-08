@@ -3,12 +3,11 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { EnCurso, Respirar } from './components/Foco'
 import { Hoy } from './components/Hoy'
 import { dayKey, getActiveBlock, Task, useFocusStore } from './store'
-import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow, saveAction } from './ui/logic'
+import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow, saveAction, Screen, visibleScreen } from './ui/logic'
 import { useProposal } from './ui/useProposal'
 import './components/controls.css'
 
 type Device = 'ordenador' | 'movil' | 'reloj'
-type Screen = 'hoy' | 'curso' | 'resp'
 
 function App() {
   return (
@@ -110,18 +109,18 @@ function Presencia({ device }: { device: Device }) {
   }
 
 
-  // Sin bloque ni resumen pendiente, En curso no tiene sentido fuera del reloj.
-  const showHoy = !isWatch && (screen === 'hoy' || (screen === 'curso' && phase === 'listo'))
+  const visible = visibleScreen(screen, phase, isWatch)
   const blockTitle = activeBlock ? activeBlock.title || FALLBACK_TITLE : doneTitle ?? titleOf(selectedTaskId)
 
   return (
     <main className="app" data-device={device} data-theme={isWatch ? 'noche' : undefined}>
-      {showHoy
+      {visible === 'hoy'
         ? <Hoy
           device={device === 'movil' ? 'movil' : 'ordenador'}
           tasks={tasks}
           proposal={proposal}
-          busy={Boolean(activeBlock)}
+          current={activeBlock ? { title: blockTitle, seconds: remainingSeconds } : undefined}
+          onCurrent={() => setScreen('curso')}
           onStart={handleStart}
           onSave={handleSave}
           onStartTask={handleStartTask}
@@ -129,7 +128,7 @@ function Presencia({ device }: { device: Device }) {
           onDelete={deleteTask}
           onLoadSamples={loadSampleTasks}
         />
-        : screen === 'resp'
+        : visible === 'resp'
           ? <Respirar onClose={() => setScreen('curso')} />
           : <EnCurso
             title={blockTitle}
@@ -139,6 +138,7 @@ function Presencia({ device }: { device: Device }) {
             onClose={phase === 'listo' ? undefined : handleClose}
             onToggle={phase === 'hecho' ? undefined : handleToggle}
             onBreathe={() => setScreen('resp')}
+            onToday={activeBlock && !isWatch ? () => setScreen('hoy') : undefined}
           />}
     </main>
   )

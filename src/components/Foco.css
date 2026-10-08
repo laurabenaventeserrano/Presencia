@@ -4,6 +4,8 @@
 .foco__tiempo { font-size: var(--texto-tiempo); font-weight: var(--peso-fino); letter-spacing: var(--tracking-tiempo); line-height: var(--interlineado-tiempo); font-variant-numeric: tabular-nums; }
 .foco__controles { display: flex; align-items: center; justify-content: center; gap: var(--controles-gap); }
 .foco__cerrar { position: absolute; top: var(--cerrar-inset); left: var(--cerrar-inset); }
+.foco__hoy { position: absolute; top: var(--cerrar-inset); left: var(--cerrar-inset); min-width: var(--control-fila); min-height: var(--control-fila); display: inline-flex; align-items: center; justify-content: center; padding: 0 var(--espacio-3); border: 0; border-radius: var(--radio-boton); color: var(--secundario); background: transparent; font-size: var(--texto-etiqueta); font-weight: var(--peso-normal); transition: color var(--transicion); }
+.foco__hoy:hover { color: var(--tinta); }
 .foco__respiracion { font-size: var(--texto-respiracion); font-weight: var(--peso-fino); letter-spacing: var(--tracking-titulo); }
 
 .puntos { display: flex; gap: var(--punto-gap); }

@@ -4,6 +4,8 @@ export type OrbState = 'reposo' | 'escucha' | 'foco' | 'pausa' | 'hecho' | 'resp
 
 export type FocusPhase = 'listo' | 'en-marcha' | 'en-pausa' | 'hecho'
 
+export type Screen = 'hoy' | 'curso' | 'resp'
+
 export type BreathPhase = 'inspira' | 'espira'
 
 export type Breath = { phase: BreathPhase; cycles: number }
@@ -58,6 +60,14 @@ export type SaveAction =
 // Guardar una fila que ya es una tarea solo le pone los minutos editados; si no, crea la tarea.
 export const saveAction = ({ title, minutes, taskId }: ProposalRow): SaveAction =>
   taskId ? { type: 'actualizar', taskId, minutes } : { type: 'crear', title, minutes }
+
+// Qué pantalla se ve. Hoy se puede ver con un bloque en marcha; el reloj nunca muestra Hoy,
+// y sin bloque ni resumen pendiente En curso no tiene sentido fuera del reloj.
+export const visibleScreen = (screen: Screen, phase: FocusPhase, isWatch: boolean): Screen => {
+  if (!isWatch && (screen === 'hoy' || (screen === 'curso' && phase === 'listo'))) return 'hoy'
+  if (screen === 'resp') return 'resp'
+  return 'curso'
+}
 
 // Mientras escribes o la IA responde, el orbe escucha.
 export const hoyOrb = (draft: string, streaming: boolean): OrbState =>

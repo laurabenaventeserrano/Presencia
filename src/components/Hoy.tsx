@@ -1,17 +1,21 @@
 import { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Task } from '../store'
-import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, rowReady } from '../ui/logic'
+import { formatTime, hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, rowReady } from '../ui/logic'
 import type { Proposal } from '../ui/useProposal'
 import { Icon } from './Icon'
 import { Orb } from './Orb'
 import './Hoy.css'
 
+type CurrentBlock = { title: string; seconds: number }
+
 type HoyProps = {
   device: 'ordenador' | 'movil'
   tasks: Task[]
   proposal: Proposal
-  busy: boolean
+  // El bloque en marcha o en pausa, si lo hay: Hoy lo recuerda arriba y bloquea Empezar.
+  current?: CurrentBlock
+  onCurrent: () => void
   onStart: (row: ProposalRow) => void
   onSave: (row: ProposalRow) => void
   onStartTask: (task: Task) => void
@@ -22,10 +26,11 @@ type HoyProps = {
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
 
-export function Hoy({ device, tasks, proposal, busy, onStart, onSave, onStartTask, onToggleDone, onDelete, onLoadSamples }: HoyProps) {
+export function Hoy({ device, tasks, proposal, current, onCurrent, onStart, onSave, onStartTask, onToggleDone, onDelete, onLoadSamples }: HoyProps) {
   const { text, status, rows, ask, cancel, stepRow, renameRow, removeRow } = proposal
   const [intention, setIntention] = useState('')
   const isStreaming = status === 'streaming'
+  const busy = current !== undefined
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -68,6 +73,13 @@ export function Hoy({ device, tasks, proposal, busy, onStart, onSave, onStartTas
       </form>
 
       <div className="tarjeta">
+        {current && <>
+          <button className="en-marcha" type="button" onClick={onCurrent} aria-label={`${current.title}, quedan ${formatTime(current.seconds)}. Volver al bloque`}>
+            <span className="en-marcha__titulo">{current.title}</span>
+            <span className="en-marcha__tiempo">{formatTime(current.seconds)}</span>
+          </button>
+          <hr className="separador" />
+        </>}
         <h2 className="etiqueta">Propuesta</h2>
         {rows.length === 0
           ? <p className="vacio">Nada propuesto todavía.</p>
