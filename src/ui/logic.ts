@@ -42,6 +42,12 @@ export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly P
       }
     })
 
+// Cambia una sola fila del borrador y deja las demás como estaban.
+export const updateRow = (rows: readonly ProposalRow[], key: string, change: (row: ProposalRow) => ProposalRow) =>
+  rows.map((row) => row.key === key ? change(row) : row)
+
+export const removeRow = (rows: readonly ProposalRow[], key: string) => rows.filter((row) => row.key !== key)
+
 // Una fila sin título no se puede empezar ni guardar.
 export const rowReady = (row: ProposalRow) => row.title.trim().length > 0
 

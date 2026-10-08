@@ -4,6 +4,7 @@ import { EnCurso, Respirar } from './components/Foco'
 import { Hoy } from './components/Hoy'
 import { dayKey, getActiveBlock, Task, useFocusStore } from './store'
 import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow, saveAction } from './ui/logic'
+import { useProposal } from './ui/useProposal'
 import './components/controls.css'
 
 type Device = 'ordenador' | 'movil' | 'reloj'
@@ -37,6 +38,8 @@ function Presencia({ device }: { device: Device }) {
   const resume = useFocusStore((state) => state.resume)
   const finish = useFocusStore((state) => state.finish)
   const reset = useFocusStore((state) => state.reset)
+
+  const proposal = useProposal(tasks)
 
   const today = days[dayKey()] ?? { date: dayKey(), taskIds: tasks.map((task) => task.id), blocks: [] }
   const activeBlock = getActiveBlock(today.blocks)
@@ -117,6 +120,7 @@ function Presencia({ device }: { device: Device }) {
         ? <Hoy
           device={device === 'movil' ? 'movil' : 'ordenador'}
           tasks={tasks}
+          proposal={proposal}
           busy={Boolean(activeBlock)}
           onStart={handleStart}
           onSave={handleSave}

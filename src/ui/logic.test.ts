@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PlanTask } from '../ai/types'
-import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, rowReady, saveAction, stepMinutes } from './logic'
+import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, removeRow, rowReady, saveAction, stepMinutes, updateRow } from './logic'
 
 describe('formatTime', () => {
   it('formatea minutos y segundos con dos cifras', () => {
@@ -53,6 +53,24 @@ describe('proposalRows', () => {
       { kind: 'focus', minutes: 25, taskId: 'a' },
     ], tasks)
     expect(new Set(rows.map((row) => row.key)).size).toBe(2)
+  })
+})
+
+describe('updateRow y removeRow', () => {
+  const rows = [
+    { key: 'a', title: 'Leer', minutes: 25 },
+    { key: 'b', title: 'Escribir', minutes: 50 },
+  ]
+
+  it('updateRow cambia solo la fila con esa clave', () => {
+    expect(updateRow(rows, 'b', (row) => ({ ...row, title: 'Escribir el post' }))).toEqual([
+      rows[0],
+      { key: 'b', title: 'Escribir el post', minutes: 50 },
+    ])
+  })
+
+  it('removeRow quita solo esa fila', () => {
+    expect(removeRow(rows, 'a')).toEqual([rows[1]])
   })
 })
 

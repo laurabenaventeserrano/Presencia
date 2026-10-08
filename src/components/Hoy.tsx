@@ -1,9 +1,8 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { createMockProvider } from '../ai/mock-provider'
-import { usePlanStream } from '../ai/usePlanStream'
 import type { Task } from '../store'
-import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, proposalRows, rowReady, stepMinutes } from '../ui/logic'
+import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, rowReady } from '../ui/logic'
+import type { Proposal } from '../ui/useProposal'
 import { Icon } from './Icon'
 import { Orb } from './Orb'
 import './Hoy.css'
@@ -11,6 +10,7 @@ import './Hoy.css'
 type HoyProps = {
   device: 'ordenador' | 'movil'
   tasks: Task[]
+  proposal: Proposal
   busy: boolean
   onStart: (row: ProposalRow) => void
   onSave: (row: ProposalRow) => void
@@ -22,35 +22,21 @@ type HoyProps = {
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
 
-export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone, onDelete, onLoadSamples }: HoyProps) {
-  const provider = useMemo(() => createMockProvider(), [])
-  const { text, proposedBlocks, status, start, cancel } = usePlanStream(provider)
+export function Hoy({ device, tasks, proposal, busy, onStart, onSave, onStartTask, onToggleDone, onDelete, onLoadSamples }: HoyProps) {
+  const { text, status, rows, ask, cancel, stepRow, renameRow, removeRow } = proposal
   const [intention, setIntention] = useState('')
-  const [rows, setRows] = useState<ProposalRow[]>([])
   const isStreaming = status === 'streaming'
-
-  // Cada respuesta nueva de la IA sustituye el borrador anterior.
-  useEffect(() => setRows(proposalRows(proposedBlocks, tasks)), [proposedBlocks])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = intention.trim()
     if (!trimmed || isStreaming) return
-    // La IA solo planifica con lo que aún está pendiente.
-    void start(trimmed, tasks.filter((task) => !task.done))
+    ask(trimmed)
     setIntention('')
   }
 
-  const updateMinutes = (key: string, direction: 1 | -1) =>
-    setRows((current) => current.map((row) => row.key === key ? { ...row, minutes: stepMinutes(row.minutes, direction) } : row))
-
-  const renameRow = (key: string, title: string) =>
-    setRows((current) => current.map((row) => row.key === key ? { ...row, title } : row))
-
   // Lo que sale del borrador va sin espacios sobrantes.
   const cleanRow = (row: ProposalRow): ProposalRow => ({ ...row, title: row.title.trim() })
-
-  const removeRow = (key: string) => setRows((current) => current.filter((row) => row.key !== key))
 
   return (
     <section className="hoy" aria-label="Hoy">
@@ -96,9 +82,9 @@ export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggl
                   autoComplete="off"
                 />
                 <div className="fila__minutos">
-                  <button className="boton-icono boton-icono--fila" type="button" aria-label="Quitar 5 minutos" disabled={row.minutes <= MIN_MINUTES} onClick={() => updateMinutes(row.key, -1)}><Icon name="menos" /></button>
+                  <button className="boton-icono boton-icono--fila" type="button" aria-label="Quitar 5 minutos" disabled={row.minutes <= MIN_MINUTES} onClick={() => stepRow(row.key, -1)}><Icon name="menos" /></button>
                   <span className="fila__valor">{row.minutes} min</span>
-                  <button className="boton-icono boton-icono--fila" type="button" aria-label="Añadir 5 minutos" disabled={row.minutes >= MAX_MINUTES} onClick={() => updateMinutes(row.key, 1)}><Icon name="mas" /></button>
+                  <button className="boton-icono boton-icono--fila" type="button" aria-label="Añadir 5 minutos" disabled={row.minutes >= MAX_MINUTES} onClick={() => stepRow(row.key, 1)}><Icon name="mas" /></button>
                 </div>
               </div>
               <div className="fila__acciones">
