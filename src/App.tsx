@@ -29,6 +29,7 @@ function Presencia({ device }: { device: Device }) {
   const addTask = useFocusStore((state) => state.addTask)
   const setTaskMinutes = useFocusStore((state) => state.setTaskMinutes)
   const toggleTaskDone = useFocusStore((state) => state.toggleTaskDone)
+  const deleteTask = useFocusStore((state) => state.deleteTask)
   const start = useFocusStore((state) => state.start)
   const startBlock = useFocusStore((state) => state.startBlock)
   const pause = useFocusStore((state) => state.pause)
@@ -120,6 +121,7 @@ function Presencia({ device }: { device: Device }) {
           onSave={handleSave}
           onStartTask={handleStartTask}
           onToggleDone={toggleTaskDone}
+          onDelete={deleteTask}
         />
         : screen === 'resp'
           ? <Respirar onClose={() => setScreen('curso')} />

@@ -16,11 +16,12 @@ type HoyProps = {
   onSave: (row: ProposalRow) => void
   onStartTask: (task: Task) => void
   onToggleDone: (taskId: string) => void
+  onDelete: (taskId: string) => void
 }
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
 
-export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone }: HoyProps) {
+export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone, onDelete }: HoyProps) {
   const provider = useMemo(() => createMockProvider(), [])
   const { text, proposedBlocks, status, start, cancel } = usePlanStream(provider)
   const [intention, setIntention] = useState('')
@@ -117,6 +118,7 @@ export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggl
               <div className="fila__acciones">
                 <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => onStartTask(task)}>{busy ? BUSY_LABEL : 'Empezar'}</button>
                 <button className="boton" type="button" aria-pressed={task.done} onClick={() => onToggleDone(task.id)}>Hecha</button>
+                <button className="boton" type="button" onClick={() => onDelete(task.id)}>Borrar</button>
               </div>
             </li>)}
           </ul>}
