@@ -17,11 +17,12 @@ type HoyProps = {
   onStartTask: (task: Task) => void
   onToggleDone: (taskId: string) => void
   onDelete: (taskId: string) => void
+  onLoadSamples: () => void
 }
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
 
-export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone, onDelete }: HoyProps) {
+export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggleDone, onDelete, onLoadSamples }: HoyProps) {
   const provider = useMemo(() => createMockProvider(), [])
   const { text, proposedBlocks, status, start, cancel } = usePlanStream(provider)
   const [intention, setIntention] = useState('')
@@ -111,7 +112,12 @@ export function Hoy({ device, tasks, busy, onStart, onSave, onStartTask, onToggl
 
         <h2 className="etiqueta">Tareas</h2>
         {tasks.length === 0
-          ? <p className="vacio">No hay tareas guardadas.</p>
+          ? <div className="fila">
+            <p className="vacio">No hay tareas guardadas.</p>
+            <div className="fila__acciones">
+              <button className="boton" type="button" onClick={onLoadSamples}>Cargar tareas de ejemplo</button>
+            </div>
+          </div>
           : <ul className="lista">
             {tasks.map((task) => <li className="fila" key={task.id}>
               <span className={task.done ? 'fila__nombre fila__nombre--hecha' : 'fila__nombre'}>{task.title}</span>
