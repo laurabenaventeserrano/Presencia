@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { createMockProvider } from '../ai/mock-provider'
 import { usePlanStream } from '../ai/usePlanStream'
 import type { Task } from '../store'
-import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, proposalRows, stepMinutes } from '../ui/logic'
+import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, proposalRows, rowReady, stepMinutes } from '../ui/logic'
 import { Icon } from './Icon'
 import { Orb } from './Orb'
 import './Hoy.css'
@@ -41,6 +41,12 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
 
   const updateMinutes = (key: string, direction: 1 | -1) =>
     setRows((current) => current.map((row) => row.key === key ? { ...row, minutes: stepMinutes(row.minutes, direction) } : row))
+
+  const renameRow = (key: string, title: string) =>
+    setRows((current) => current.map((row) => row.key === key ? { ...row, title } : row))
+
+  // Lo que sale del borrador va sin espacios sobrantes.
+  const cleanRow = (row: ProposalRow): ProposalRow => ({ ...row, title: row.title.trim() })
 
   const removeRow = (key: string) => setRows((current) => current.filter((row) => row.key !== key))
 
@@ -80,7 +86,13 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
           : <ul className="lista">
             {rows.map((row) => <li className="fila" key={row.key}>
               <div className="fila__cabecera">
-                <span className="fila__nombre">{row.title}</span>
+                <input
+                  className="fila__nombre fila__titulo"
+                  value={row.title}
+                  onChange={(event) => renameRow(row.key, event.target.value)}
+                  aria-label="Título del bloque"
+                  autoComplete="off"
+                />
                 <div className="fila__minutos">
                   <button className="boton-icono boton-icono--fila" type="button" aria-label="Quitar 5 minutos" disabled={row.minutes <= MIN_MINUTES} onClick={() => updateMinutes(row.key, -1)}><Icon name="menos" /></button>
                   <span className="fila__valor">{row.minutes} min</span>
@@ -88,8 +100,8 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
                 </div>
               </div>
               <div className="fila__acciones">
-                <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => { onStart(row); removeRow(row.key) }}>{busy ? BUSY_LABEL : 'Empezar'}</button>
-                <button className="boton" type="button" onClick={() => { onSave(row); removeRow(row.key) }}>Guardar</button>
+                <button className="boton boton--oscuro" type="button" disabled={busy || !rowReady(row)} onClick={() => { onStart(cleanRow(row)); removeRow(row.key) }}>{busy ? BUSY_LABEL : 'Empezar'}</button>
+                <button className="boton" type="button" disabled={!rowReady(row)} onClick={() => { onSave(cleanRow(row)); removeRow(row.key) }}>Guardar</button>
               </div>
             </li>)}
           </ul>}

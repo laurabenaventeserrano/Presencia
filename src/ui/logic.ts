@@ -42,6 +42,9 @@ export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly P
       }
     })
 
+// Una fila sin título no se puede empezar ni guardar.
+export const rowReady = (row: ProposalRow) => row.title.trim().length > 0
+
 export type SaveAction =
   | { type: 'actualizar'; taskId: string; minutes: number }
   | { type: 'crear'; title: string; minutes: number }

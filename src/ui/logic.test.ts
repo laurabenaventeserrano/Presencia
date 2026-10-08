@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PlanTask } from '../ai/types'
-import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, saveAction, stepMinutes } from './logic'
+import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, rowReady, saveAction, stepMinutes } from './logic'
 
 describe('formatTime', () => {
   it('formatea minutos y segundos con dos cifras', () => {
@@ -53,6 +53,13 @@ describe('proposalRows', () => {
       { kind: 'focus', minutes: 25, taskId: 'a' },
     ], tasks)
     expect(new Set(rows.map((row) => row.key)).size).toBe(2)
+  })
+})
+
+describe('rowReady', () => {
+  it('pide un título con algo más que espacios', () => {
+    expect(rowReady({ key: 'k', title: 'Leer', minutes: 25 })).toBe(true)
+    expect(rowReady({ key: 'k', title: '   ', minutes: 25 })).toBe(false)
   })
 })
 

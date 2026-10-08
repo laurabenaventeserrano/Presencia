@@ -18,6 +18,7 @@
 .fila { display: flex; flex-direction: column; gap: var(--espacio-3); }
 .fila__cabecera { display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); }
 .fila__nombre { min-width: 0; font-size: var(--texto-item); font-weight: var(--peso-ligero); overflow-wrap: anywhere; }
+.fila__titulo { flex: 1; min-height: var(--control-fila); padding: 0; border: 0; border-radius: var(--radio-boton); color: var(--tinta); background: transparent; text-overflow: ellipsis; }
 .fila__nombre--hecha { color: var(--secundario); text-decoration: line-through; text-decoration-thickness: var(--linea); }
 .fila__minutos { flex: none; display: flex; align-items: center; gap: var(--espacio-2); }
 .fila__valor { min-width: var(--ancho-minutos); color: var(--secundario); font-size: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: center; white-space: nowrap; }
