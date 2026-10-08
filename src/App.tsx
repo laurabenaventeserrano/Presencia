@@ -2,18 +2,14 @@ import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { EnCurso, Respirar } from './components/Foco'
 import { Hoy } from './components/Hoy'
-import { Block, dayKey, useFocusStore } from './store'
-import { FocusPhase, formatTime } from './ui/logic'
+import { dayKey, getActiveBlock, useFocusStore } from './store'
+import { FALLBACK_TITLE, FocusPhase, formatTime } from './ui/logic'
 import './components/controls.css'
 
 type Device = 'ordenador' | 'movil' | 'reloj'
 type Screen = 'hoy' | 'curso' | 'resp'
 
 const TASK_MINUTES = 25
-
-const getActiveBlock = (blocks: Block[]) => [...blocks].reverse().find(
-  (block) => block.status === 'running' || block.status === 'paused',
-)
 
 function App() {
   return (
@@ -33,9 +29,8 @@ function Presencia({ device }: { device: Device }) {
   const selectedTaskId = useFocusStore((state) => state.selectedTaskId)
   const durationMinutes = useFocusStore((state) => state.durationMinutes)
   const addTask = useFocusStore((state) => state.addTask)
-  const selectTask = useFocusStore((state) => state.selectTask)
-  const setDuration = useFocusStore((state) => state.setDuration)
   const start = useFocusStore((state) => state.start)
+  const startBlock = useFocusStore((state) => state.startBlock)
   const pause = useFocusStore((state) => state.pause)
   const resume = useFocusStore((state) => state.resume)
   const finish = useFocusStore((state) => state.finish)
@@ -51,7 +46,7 @@ function Presencia({ device }: { device: Device }) {
   // Título del bloque que acaba de terminar solo: se queda en pantalla con el orbe en Hecho.
   const [doneTitle, setDoneTitle] = useState<string | null>(null)
 
-  const titleOf = (taskId: string) => tasks.find((task) => task.id === taskId)?.title ?? 'Bloque de foco'
+  const titleOf = (taskId: string) => tasks.find((task) => task.id === taskId)?.title ?? FALLBACK_TITLE
 
   const remainingSeconds = activeBlock
     ? isRunning && activeBlock.endsAt
@@ -72,7 +67,7 @@ function Presencia({ device }: { device: Device }) {
   // El timer guarda endsAt: cuando se alcanza, el bloque se completa solo.
   useEffect(() => {
     if (isRunning && activeBlock?.endsAt && activeBlock.endsAt <= now) {
-      setDoneTitle(titleOf(activeBlock.taskId))
+      setDoneTitle(activeBlock.title || FALLBACK_TITLE)
       finish()
     }
   })
@@ -81,21 +76,18 @@ function Presencia({ device }: { device: Device }) {
     document.title = isRunning ? `${formatTime(remainingSeconds)} · Presencia` : 'Presencia'
   }, [isRunning, remainingSeconds])
 
-  // Empezar es siempre el mismo camino: elegir la tarea, fijar los minutos y arrancar.
-  const startBlock = (taskId: string | null, title: string, minutes: number) => {
-    if (taskId) selectTask(taskId)
-    else addTask(title)
-    setDuration(minutes)
-    start()
+  // Empezar es siempre el mismo camino: startBlock del store, que no hace nada si ya hay un bloque.
+  const handleStartBlock = (title: string, minutes: number, taskId?: string) => {
+    startBlock({ title, minutes, taskId })
     setDoneTitle(null)
     setScreen('curso')
   }
 
   const findTask = (title: string) => useFocusStore.getState().tasks.find((task) => task.title === title)
 
-  const handleStart = (title: string, minutes: number) => startBlock(findTask(title)?.id ?? null, title, minutes)
+  const handleStart = (title: string, minutes: number) => handleStartBlock(title, minutes, findTask(title)?.id)
   const handleSave = (title: string) => { if (!findTask(title)) addTask(title) }
-  const handleStartTask = (taskId: string) => startBlock(taskId, titleOf(taskId), TASK_MINUTES)
+  const handleStartTask = (taskId: string) => handleStartBlock(titleOf(taskId), TASK_MINUTES, taskId)
 
   const handleClose = () => {
     if (phase === 'hecho') setDoneTitle(null)
@@ -110,12 +102,12 @@ function Presencia({ device }: { device: Device }) {
     else if (phase === 'listo') { start(); setDoneTitle(null) }
   }
 
-  const completedTaskIds = new Set(today.blocks.filter((block) => block.status === 'completed').map((block) => block.taskId))
+  const completedTaskIds = new Set(today.blocks.flatMap((block) => block.status === 'completed' && block.taskId ? [block.taskId] : []))
   const todayTasks = today.taskIds.map((id) => tasks.find((task) => task.id === id)).filter((task) => task !== undefined)
 
   // Sin bloque ni resumen pendiente, En curso no tiene sentido fuera del reloj.
   const showHoy = !isWatch && (screen === 'hoy' || (screen === 'curso' && phase === 'listo'))
-  const blockTitle = activeBlock ? titleOf(activeBlock.taskId) : doneTitle ?? titleOf(selectedTaskId)
+  const blockTitle = activeBlock ? activeBlock.title || FALLBACK_TITLE : doneTitle ?? titleOf(selectedTaskId)
 
   return (
     <main className="app" data-device={device} data-theme={isWatch ? 'noche' : undefined}>

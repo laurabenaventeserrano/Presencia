@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import type { BlockKind } from './ai/types'
 
 export type Task = {
   id: string
@@ -9,7 +10,10 @@ export type Task = {
 
 export type Block = {
   id: string
-  taskId: string
+  taskId?: string
+  title: string
+  kind: BlockKind
+  plannedMin: number
   startedAt: number
   endsAt: number | null
   durationSeconds: number
@@ -32,6 +36,12 @@ export type Memory = {
   type: 'franja' | 'duracion' | 'arrastre'
 }
 
+export type StartBlockInput = {
+  title: string
+  minutes: number
+  taskId?: string
+}
+
 type FocusState = {
   tasks: Task[]
   days: Record<string, Day>
@@ -41,6 +51,7 @@ type FocusState = {
   selectTask: (taskId: string) => void
   setDuration: (minutes: number) => void
   start: () => void
+  startBlock: (input: StartBlockInput) => void
   pause: () => void
   resume: () => void
   finish: () => void
@@ -65,6 +76,37 @@ const currentDay = (): Day => ({
   taskIds: initialTasks.map((task) => task.id),
   blocks: [],
 })
+
+export const getActiveBlock = (blocks: Block[]) => [...blocks].reverse().find(
+  (block) => block.status === 'running' || block.status === 'paused',
+)
+
+type BlockV1 = Omit<Block, 'title' | 'kind' | 'plannedMin'>
+
+type PersistedFocusState = Partial<Pick<FocusState, 'tasks' | 'days' | 'selectedTaskId' | 'durationMinutes'>>
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
+
+// v1 → v2: los bloques guardan su título, su tipo y sus minutos para no depender de una tarea.
+const migrateBlock = (block: BlockV1, tasks: readonly Task[]): Block => ({
+  ...block,
+  title: tasks.find((task) => task.id === block.taskId)?.title ?? '',
+  kind: 'focus',
+  plannedMin: Math.round(block.durationSeconds / 60),
+})
+
+export const migrateFocusState = (persisted: unknown, version: number): PersistedFocusState => {
+  if (!isRecord(persisted)) return {}
+  const state = persisted as PersistedFocusState
+  if (version >= 2) return state
+  const tasks = state.tasks ?? []
+  const oldDays = (state.days ?? {}) as Record<string, Omit<Day, 'blocks'> & { blocks: BlockV1[] }>
+  const days = Object.fromEntries(Object.entries(oldDays).map(([date, day]) => [
+    date,
+    { ...day, blocks: day.blocks.map((block) => migrateBlock(block, tasks)) },
+  ]))
+  return { ...state, days }
+}
 
 const getToday = (days: Record<string, Day>) => days[dayKey()] ?? currentDay()
 
@@ -93,12 +135,22 @@ export const useFocusStore = create<FocusState>()(
       selectTask: (taskId) => set({ selectedTaskId: taskId }),
       setDuration: (durationMinutes) => set({ durationMinutes }),
       start: () => {
-        const { selectedTaskId, durationMinutes, days } = get()
+        const { selectedTaskId, durationMinutes, tasks } = get()
+        const title = tasks.find((task) => task.id === selectedTaskId)?.title ?? ''
+        get().startBlock({ title, minutes: durationMinutes, taskId: selectedTaskId || undefined })
+      },
+      // La única forma de empezar un bloque: desde la propuesta, desde una tarea o desde el reloj.
+      startBlock: ({ title, minutes, taskId }) => {
+        const { days } = get()
+        if (getActiveBlock(getToday(days).blocks)) return
         const now = Date.now()
-        const durationSeconds = durationMinutes * 60
+        const durationSeconds = minutes * 60
         const block: Block = {
           id: crypto.randomUUID(),
-          taskId: selectedTaskId,
+          taskId,
+          title,
+          kind: 'focus',
+          plannedMin: minutes,
           startedAt: now,
           endsAt: now + durationSeconds * 1000,
           durationSeconds,
@@ -155,7 +207,8 @@ export const useFocusStore = create<FocusState>()(
     {
       name: 'presencia-app-focus-v1',
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
+      migrate: migrateFocusState,
     },
   ),
 )
