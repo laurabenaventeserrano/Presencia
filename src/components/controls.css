@@ -1,0 +1,16 @@
+/* Controles blandos y discretos: sin borde, esquinas de 4, tonos casi iguales al fondo. */
+
+.icono { width: var(--icono); height: var(--icono); flex: none; }
+
+.boton-icono { width: var(--control); height: var(--control); flex: none; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: var(--radio-boton); color: var(--tinta); background: var(--suave); transition: opacity var(--transicion); }
+.boton-icono--fila { width: var(--control-fila); height: var(--control-fila); }
+.boton-icono--oscuro { color: var(--sobre-oscuro); background: var(--boton-oscuro); }
+
+.boton { min-height: var(--control-fila); display: inline-flex; align-items: center; justify-content: center; padding: 0 var(--espacio-5); border: 0; border-radius: var(--radio-boton); color: var(--tinta); background: var(--suave); font-size: var(--texto-etiqueta); font-weight: var(--peso-normal); transition: opacity var(--transicion); }
+.boton--oscuro { color: var(--sobre-oscuro); background: var(--boton-oscuro); }
+
+.boton:not(:disabled):hover, .boton-icono:not(:disabled):hover { opacity: var(--opacidad-hover); }
+.boton:disabled, .boton-icono:disabled { opacity: var(--opacidad-deshabilitado); }
+
+.enlace { min-height: var(--control-fila); display: inline-flex; align-items: center; padding: 0 var(--espacio-5); border: 0; color: var(--secundario); background: transparent; font-size: var(--texto-enlace); font-weight: var(--peso-normal); text-decoration: underline; text-underline-offset: var(--subrayado-offset); text-decoration-thickness: var(--linea); transition: color var(--transicion); }
+.enlace:hover { color: var(--tinta); }

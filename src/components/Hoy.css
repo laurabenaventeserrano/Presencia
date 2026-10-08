@@ -1,0 +1,26 @@
+.hoy { width: 100%; max-width: var(--columna); margin: 0 auto; padding: var(--pad-arriba) var(--pad-lados) var(--pad-abajo); display: flex; flex-direction: column; align-items: center; gap: var(--pantalla-gap); }
+
+.hoy__titulo { font-size: var(--texto-titulo); font-weight: var(--peso-fino); letter-spacing: var(--tracking-titulo); line-height: var(--interlineado-titulo); text-align: center; text-wrap: balance; }
+.hoy__respuesta { min-height: calc(var(--texto-cuerpo) * var(--interlineado-texto)); color: var(--secundario); font-size: var(--texto-cuerpo); font-weight: var(--peso-ligero); text-align: center; text-wrap: pretty; white-space: pre-wrap; }
+
+.campo { width: 100%; display: flex; align-items: center; gap: var(--espacio-2); padding: var(--campo-pad) var(--campo-pad) var(--campo-pad) var(--espacio-5); border-radius: var(--radio-tarjeta); background: var(--pastilla); }
+.campo__input { flex: 1; min-width: 0; height: var(--control-fila); border: 0; background: transparent; color: var(--tinta); font-size: var(--texto-campo); font-weight: var(--peso-normal); }
+.campo__input::placeholder { color: var(--secundario); }
+.campo__input:focus-visible { outline-offset: var(--foco-offset-campo); }
+.campo__input:disabled { color: var(--secundario); }
+
+.tarjeta { width: 100%; display: flex; flex-direction: column; gap: var(--pantalla-gap); padding: var(--espacio-6); border-radius: var(--radio-tarjeta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); }
+.etiqueta { color: var(--secundario); font-size: var(--texto-etiqueta); font-weight: var(--peso-normal); }
+.vacio { color: var(--secundario); font-size: var(--texto-secundario); }
+.separador { height: var(--linea); margin: 0; border: 0; background: var(--suave); }
+
+.lista { display: flex; flex-direction: column; gap: var(--pantalla-gap); }
+.fila { display: flex; flex-direction: column; gap: var(--espacio-3); }
+.fila__cabecera { display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); }
+.fila__nombre { min-width: 0; font-size: var(--texto-item); font-weight: var(--peso-ligero); overflow-wrap: anywhere; }
+.fila__nombre--hecha { color: var(--secundario); text-decoration: line-through; text-decoration-thickness: var(--linea); }
+.fila__minutos { flex: none; display: flex; align-items: center; gap: var(--espacio-2); }
+.fila__valor { min-width: var(--ancho-minutos); color: var(--secundario); font-size: var(--texto-secundario); font-variant-numeric: tabular-nums; text-align: center; white-space: nowrap; }
+.fila__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espacio-2); }
+
+.vistas { display: flex; justify-content: center; }
