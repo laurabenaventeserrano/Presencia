@@ -8,7 +8,7 @@ export type BreathPhase = 'inspira' | 'espira'
 
 export type Breath = { phase: BreathPhase; cycles: number }
 
-export type ProposalRow = { key: string; title: string; minutes: number }
+export type ProposalRow = { key: string; title: string; minutes: number; taskId?: string }
 
 export const MIN_MINUTES = 5
 export const MAX_MINUTES = 120
@@ -28,14 +28,19 @@ export const stepMinutes = (minutes: number, direction: 1 | -1) =>
   Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, minutes + direction * MINUTE_STEP))
 
 // Solo los bloques de foco se proponen; las pausas de la IA no se muestran en esta fase.
+// Si la IA inventa una tarea (no está en la lista), la fila conserva su título pero no su id.
 export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly PlanTask[]): ProposalRow[] =>
   blocks
     .filter((block) => block.kind === 'focus')
-    .map((block, index) => ({
-      key: `${index}-${block.taskId ?? 'libre'}`,
-      title: tasks.find((task) => task.id === block.taskId)?.title ?? FALLBACK_TITLE,
-      minutes: block.minutes,
-    }))
+    .map((block, index) => {
+      const task = tasks.find((item) => item.id === block.taskId)
+      return {
+        key: `${index}-${block.taskId ?? 'libre'}`,
+        title: task?.title ?? block.title ?? FALLBACK_TITLE,
+        minutes: block.minutes,
+        taskId: task?.id,
+      }
+    })
 
 // Mientras escribes o la IA responde, el orbe escucha.
 export const hoyOrb = (draft: string, streaming: boolean): OrbState =>

@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { EnCurso, Respirar } from './components/Foco'
 import { Hoy } from './components/Hoy'
 import { dayKey, getActiveBlock, useFocusStore } from './store'
-import { FALLBACK_TITLE, FocusPhase, formatTime } from './ui/logic'
+import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow } from './ui/logic'
 import './components/controls.css'
 
 type Device = 'ordenador' | 'movil' | 'reloj'
@@ -85,7 +85,7 @@ function Presencia({ device }: { device: Device }) {
 
   const findTask = (title: string) => useFocusStore.getState().tasks.find((task) => task.title === title)
 
-  const handleStart = (title: string, minutes: number) => handleStartBlock(title, minutes, findTask(title)?.id)
+  const handleStart = ({ title, minutes, taskId }: ProposalRow) => handleStartBlock(title, minutes, taskId)
   const handleSave = (title: string) => { if (!findTask(title)) addTask(title) }
   const handleStartTask = (taskId: string) => handleStartBlock(titleOf(taskId), TASK_MINUTES, taskId)
 

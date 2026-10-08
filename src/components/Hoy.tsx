@@ -2,7 +2,6 @@ import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createMockProvider } from '../ai/mock-provider'
 import { usePlanStream } from '../ai/usePlanStream'
-import { seedTasks } from '../seed/tasks'
 import type { Task } from '../store'
 import { hoyOrb, MAX_MINUTES, MIN_MINUTES, ProposalRow, proposalRows, stepMinutes } from '../ui/logic'
 import { Icon } from './Icon'
@@ -14,7 +13,7 @@ type HoyProps = {
   tasks: Task[]
   doneTaskIds: ReadonlySet<string>
   busy: boolean
-  onStart: (title: string, minutes: number) => void
+  onStart: (row: ProposalRow) => void
   onSave: (title: string) => void
   onStartTask: (taskId: string) => void
 }
@@ -29,13 +28,14 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
   const isStreaming = status === 'streaming'
 
   // Cada respuesta nueva de la IA sustituye el borrador anterior.
-  useEffect(() => setRows(proposalRows(proposedBlocks, seedTasks)), [proposedBlocks])
+  useEffect(() => setRows(proposalRows(proposedBlocks, tasks)), [proposedBlocks])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = intention.trim()
     if (!trimmed || isStreaming) return
-    void start(trimmed, seedTasks)
+    // La IA solo planifica con lo que aún está pendiente.
+    void start(trimmed, tasks.filter((task) => !task.done))
     setIntention('')
   }
 
@@ -88,7 +88,7 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
                 </div>
               </div>
               <div className="fila__acciones">
-                <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => { onStart(row.title, row.minutes); removeRow(row.key) }}>{busy ? BUSY_LABEL : 'Empezar'}</button>
+                <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => { onStart(row); removeRow(row.key) }}>{busy ? BUSY_LABEL : 'Empezar'}</button>
                 <button className="boton" type="button" onClick={() => { onSave(row.title); removeRow(row.key) }}>Guardar</button>
               </div>
             </li>)}

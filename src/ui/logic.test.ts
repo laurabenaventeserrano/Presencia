@@ -36,10 +36,15 @@ describe('proposalRows', () => {
       { kind: 'break', minutes: 5 },
       { kind: 'focus', minutes: 25, taskId: 'desconocida' },
     ], tasks)
-    expect(rows.map((row) => [row.title, row.minutes])).toEqual([
-      ['Escribir la propuesta', 50],
-      [FALLBACK_TITLE, 25],
+    expect(rows.map((row) => [row.title, row.minutes, row.taskId])).toEqual([
+      ['Escribir la propuesta', 50, 'a'],
+      [FALLBACK_TITLE, 25, undefined],
     ])
+  })
+
+  it('una tarea inventada por la IA conserva su título, pero no se enlaza a ninguna tarea', () => {
+    const [row] = proposalRows([{ kind: 'focus', minutes: 15, title: 'llamar al banco', taskId: 'intent-0' }], tasks)
+    expect(row).toMatchObject({ title: 'llamar al banco', minutes: 15, taskId: undefined })
   })
 
   it('da a cada fila una clave distinta', () => {
