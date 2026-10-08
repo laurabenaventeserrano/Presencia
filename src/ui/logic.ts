@@ -1,5 +1,4 @@
-import type { ProposedBlock } from '../ai/types'
-import type { Task } from '../store'
+import type { PlanTask, ProposedBlock } from '../ai/types'
 
 export type OrbState = 'reposo' | 'escucha' | 'foco' | 'pausa' | 'hecho' | 'respirar'
 
@@ -29,7 +28,7 @@ export const stepMinutes = (minutes: number, direction: 1 | -1) =>
   Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, minutes + direction * MINUTE_STEP))
 
 // Solo los bloques de foco se proponen; las pausas de la IA no se muestran en esta fase.
-export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly Task[]): ProposalRow[] =>
+export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly PlanTask[]): ProposalRow[] =>
   blocks
     .filter((block) => block.kind === 'focus')
     .map((block, index) => ({

@@ -103,7 +103,6 @@ function Presencia({ device }: { device: Device }) {
   }
 
   const completedTaskIds = new Set(today.blocks.flatMap((block) => block.status === 'completed' && block.taskId ? [block.taskId] : []))
-  const todayTasks = today.taskIds.map((id) => tasks.find((task) => task.id === id)).filter((task) => task !== undefined)
 
   // Sin bloque ni resumen pendiente, En curso no tiene sentido fuera del reloj.
   const showHoy = !isWatch && (screen === 'hoy' || (screen === 'curso' && phase === 'listo'))
@@ -114,7 +113,7 @@ function Presencia({ device }: { device: Device }) {
       {showHoy
         ? <Hoy
           device={device === 'movil' ? 'movil' : 'ordenador'}
-          tasks={todayTasks}
+          tasks={tasks}
           doneTaskIds={completedTaskIds}
           busy={Boolean(activeBlock)}
           onStart={handleStart}

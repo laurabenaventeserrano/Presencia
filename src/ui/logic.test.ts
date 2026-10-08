@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Task } from '../store'
+import type { PlanTask } from '../ai/types'
 import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, stepMinutes } from './logic'
 
 describe('formatTime', () => {
@@ -28,7 +28,7 @@ describe('stepMinutes', () => {
 })
 
 describe('proposalRows', () => {
-  const tasks: Task[] = [{ id: 'a', title: 'Escribir la propuesta', createdAt: 0 }]
+  const tasks: PlanTask[] = [{ id: 'a', title: 'Escribir la propuesta' }]
 
   it('muestra solo los bloques de foco con el título de su tarea', () => {
     const rows = proposalRows([

@@ -1,11 +1,14 @@
-import type { Task } from '../store'
+import type { PlanTask } from '../ai/types'
 
-// Temporal, se sustituye por el store en el cachito 5.
-export const seedTasks: Task[] = [
-  { id: 'seed-write', title: 'Escribir la propuesta del proyecto', createdAt: 0 },
-  { id: 'seed-email', title: 'Responder emails pendientes', createdAt: 0 },
-  { id: 'seed-review', title: 'Revisar el contrato con el cliente', createdAt: 0 },
-  { id: 'seed-design', title: 'Diseñar la pantalla de inicio', createdAt: 0 },
-  { id: 'seed-bills', title: 'Pagar las facturas del mes', createdAt: 0 },
-  { id: 'seed-read', title: 'Leer el informe trimestral', createdAt: 0 },
+// Solo para la demo: se cargan con «Cargar tareas de ejemplo» cuando la lista está vacía.
+export const sampleTaskTitles = [
+  'Escribir la propuesta del proyecto',
+  'Responder emails pendientes',
+  'Revisar el contrato con el cliente',
+  'Diseñar la pantalla de inicio',
+  'Pagar las facturas del mes',
+  'Leer el informe trimestral',
 ]
+
+// Temporal: el chat aún planifica con estas tareas hasta que use las del store.
+export const seedTasks: PlanTask[] = sampleTaskTitles.map((title, index) => ({ id: `seed-${index}`, title }))

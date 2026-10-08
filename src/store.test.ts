@@ -14,12 +14,14 @@ vi.hoisted(() => {
   Object.defineProperty(globalThis, 'localStorage', { value: memoryStorage, configurable: true })
 })
 
+import { sampleTaskTitles } from './seed/tasks'
 import { dayKey, getActiveBlock, migrateFocusState, useFocusStore } from './store'
 
 const NOW = new Date(2026, 9, 8, 10, 0, 0)
 const initialState = useFocusStore.getState()
 
 const todayBlocks = () => useFocusStore.getState().days[dayKey()]?.blocks ?? []
+const tasks = () => useFocusStore.getState().tasks
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -66,11 +68,77 @@ describe('startBlock', () => {
   })
 
   it('start() sigue empezando la tarea elegida con los minutos elegidos', () => {
-    const { selectTask, setDuration, start, tasks } = useFocusStore.getState()
-    selectTask(tasks[1].id)
+    const { addTask, selectTask, setDuration, start } = useFocusStore.getState()
+    addTask('Leer el informe')
+    addTask('Pagar facturas')
+    const [first] = tasks()
+    selectTask(first.id)
     setDuration(45)
     start()
-    expect(todayBlocks()[0]).toMatchObject({ taskId: tasks[1].id, title: tasks[1].title, plannedMin: 45 })
+    expect(todayBlocks()[0]).toMatchObject({ taskId: first.id, title: 'Leer el informe', plannedMin: 45 })
+  })
+})
+
+describe('tareas', () => {
+  it('una instalación nueva empieza sin tareas', () => {
+    expect(tasks()).toEqual([])
+  })
+
+  it('addTask calcula el tipo y los minutos por defecto, o usa los que se le dan', () => {
+    const { addTask } = useFocusStore.getState()
+    addTask('  Diseñar la pantalla  ')
+    addTask('Responder emails', 30)
+    expect(tasks()).toMatchObject([
+      { title: 'Diseñar la pantalla', kind: 'deep', estimatedMin: 50, done: false, createdAt: NOW.getTime() },
+      { title: 'Responder emails', kind: 'admin', estimatedMin: 30, done: false },
+    ])
+    expect(useFocusStore.getState().days[dayKey()].taskIds).toEqual(tasks().map((task) => task.id))
+  })
+
+  it('addTask ignora un título vacío', () => {
+    useFocusStore.getState().addTask('   ')
+    expect(tasks()).toEqual([])
+  })
+
+  it('setTaskMinutes cambia solo los minutos de esa tarea', () => {
+    const { addTask, setTaskMinutes } = useFocusStore.getState()
+    addTask('Leer')
+    addTask('Escribir')
+    setTaskMinutes(tasks()[0].id, 40)
+    expect(tasks().map((task) => task.estimatedMin)).toEqual([40, 50])
+  })
+
+  it('toggleTaskDone marca y desmarca una tarea', () => {
+    const { addTask, toggleTaskDone } = useFocusStore.getState()
+    addTask('Leer')
+    const id = tasks()[0].id
+    toggleTaskDone(id)
+    expect(tasks()[0].done).toBe(true)
+    toggleTaskDone(id)
+    expect(tasks()[0].done).toBe(false)
+  })
+
+  it('deleteTask la quita de la lista y del día, y sus bloques conservan el título', () => {
+    const { addTask, deleteTask, startBlock } = useFocusStore.getState()
+    addTask('Leer')
+    const [task] = tasks()
+    startBlock({ title: task.title, minutes: 25, taskId: task.id })
+    deleteTask(task.id)
+    expect(tasks()).toEqual([])
+    expect(useFocusStore.getState().days[dayKey()].taskIds).toEqual([])
+    expect(useFocusStore.getState().selectedTaskId).toBe('')
+    expect(todayBlocks()[0].title).toBe('Leer')
+  })
+
+  it('loadSampleTasks carga los ejemplos solo si la lista está vacía', () => {
+    const { addTask, loadSampleTasks } = useFocusStore.getState()
+    loadSampleTasks()
+    expect(tasks().map((task) => task.title)).toEqual(sampleTaskTitles)
+
+    useFocusStore.setState(initialState, true)
+    addTask('Mía')
+    loadSampleTasks()
+    expect(tasks().map((task) => task.title)).toEqual(['Mía'])
   })
 })
 
@@ -92,15 +160,23 @@ describe('migrateFocusState', () => {
       durationMinutes: 25,
     }
     const migrated = migrateFocusState(v1, 1)
-    expect(migrated.tasks).toEqual(v1.tasks)
+    expect(migrated.tasks).toEqual([{ id: 't', title: 'Leer', createdAt: 0, kind: 'review', estimatedMin: 25, done: false }])
     expect(migrated.days?.['2026-10-07'].blocks).toEqual([
       { ...v1.days['2026-10-07'].blocks[0], title: 'Leer', kind: 'focus', plannedMin: 25 },
       { ...v1.days['2026-10-07'].blocks[1], title: '', kind: 'focus', plannedMin: 10 },
     ])
   })
 
+  it('de v2 rellena las tareas sin tocar los bloques', () => {
+    const day = { date: '2026-10-07', taskIds: ['t'], blocks: [] }
+    const v2 = { tasks: [{ id: 't', title: 'Diseñar la pantalla', createdAt: 5 }], days: { [day.date]: day } }
+    const migrated = migrateFocusState(v2, 2)
+    expect(migrated.tasks).toEqual([{ id: 't', title: 'Diseñar la pantalla', createdAt: 5, kind: 'deep', estimatedMin: 50, done: false }])
+    expect(migrated.days).toEqual(v2.days)
+  })
+
   it('no toca un estado que ya es de la versión actual', () => {
     const current = { tasks: [], days: {}, selectedTaskId: '', durationMinutes: 25 }
-    expect(migrateFocusState(current, 2)).toBe(current)
+    expect(migrateFocusState(current, 3)).toBe(current)
   })
 })

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Task } from '../store'
-import type { AIProvider, ProposedBlock } from './types'
+import type { AIProvider, PlanTask, ProposedBlock } from './types'
 
 export type PlanStatus = 'idle' | 'streaming' | 'done' | 'cancelled'
 
@@ -10,7 +9,7 @@ export const usePlanStream = (provider: AIProvider) => {
   const [status, setStatus] = useState<PlanStatus>('idle')
   const controllerRef = useRef<AbortController | null>(null)
 
-  const start = useCallback(async (intention: string, tasks: Task[]) => {
+  const start = useCallback(async (intention: string, tasks: PlanTask[]) => {
     controllerRef.current?.abort()
     const controller = new AbortController()
     controllerRef.current = controller

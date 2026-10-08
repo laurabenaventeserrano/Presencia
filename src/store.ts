@@ -1,10 +1,15 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import type { BlockKind } from './ai/types'
+import { kindOf, minutesFor } from './ai/rules'
+import type { BlockKind, TaskKind } from './ai/types'
+import { sampleTaskTitles } from './seed/tasks'
 
 export type Task = {
   id: string
   title: string
+  estimatedMin: number
+  kind: TaskKind
+  done: boolean
   createdAt: number
 }
 
@@ -47,7 +52,11 @@ type FocusState = {
   days: Record<string, Day>
   selectedTaskId: string
   durationMinutes: number
-  addTask: (title: string) => void
+  addTask: (title: string, estimatedMin?: number) => void
+  setTaskMinutes: (taskId: string, minutes: number) => void
+  toggleTaskDone: (taskId: string) => void
+  deleteTask: (taskId: string) => void
+  loadSampleTasks: () => void
   selectTask: (taskId: string) => void
   setDuration: (minutes: number) => void
   start: () => void
@@ -65,23 +74,24 @@ export const dayKey = (date = new Date()) => {
   return `${year}-${month}-${day}`
 }
 
-const initialTasks: Task[] = [
-  { id: 'task-writing', title: 'Escribir sin interrupciones', createdAt: Date.now() },
-  { id: 'task-reading', title: 'Leer y tomar notas', createdAt: Date.now() },
-  { id: 'task-planning', title: 'Planificar la semana', createdAt: Date.now() },
-]
-
 const currentDay = (): Day => ({
   date: dayKey(),
-  taskIds: initialTasks.map((task) => task.id),
+  taskIds: [],
   blocks: [],
 })
+
+// Una tarea nueva toma su tipo del título y, si no se dicen los minutos, los de su tipo.
+const createTask = (title: string, estimatedMin?: number): Task => {
+  const kind = kindOf(title)
+  return { id: crypto.randomUUID(), title, estimatedMin: estimatedMin ?? minutesFor[kind], kind, done: false, createdAt: Date.now() }
+}
 
 export const getActiveBlock = (blocks: Block[]) => [...blocks].reverse().find(
   (block) => block.status === 'running' || block.status === 'paused',
 )
 
 type BlockV1 = Omit<Block, 'title' | 'kind' | 'plannedMin'>
+type TaskV2 = Omit<Task, 'estimatedMin' | 'kind' | 'done'>
 
 type PersistedFocusState = Partial<Pick<FocusState, 'tasks' | 'days' | 'selectedTaskId' | 'durationMinutes'>>
 
@@ -95,10 +105,13 @@ const migrateBlock = (block: BlockV1, tasks: readonly Task[]): Block => ({
   plannedMin: Math.round(block.durationSeconds / 60),
 })
 
-export const migrateFocusState = (persisted: unknown, version: number): PersistedFocusState => {
-  if (!isRecord(persisted)) return {}
-  const state = persisted as PersistedFocusState
-  if (version >= 2) return state
+// v2 → v3: las tareas guardan sus minutos, su tipo y si están hechas.
+const migrateTask = (task: TaskV2): Task => {
+  const kind = kindOf(task.title)
+  return { ...task, estimatedMin: minutesFor[kind], kind, done: false }
+}
+
+const migrateBlocks = (state: PersistedFocusState): PersistedFocusState => {
   const tasks = state.tasks ?? []
   const oldDays = (state.days ?? {}) as Record<string, Omit<Day, 'blocks'> & { blocks: BlockV1[] }>
   const days = Object.fromEntries(Object.entries(oldDays).map(([date, day]) => [
@@ -106,6 +119,14 @@ export const migrateFocusState = (persisted: unknown, version: number): Persiste
     { ...day, blocks: day.blocks.map((block) => migrateBlock(block, tasks)) },
   ]))
   return { ...state, days }
+}
+
+export const migrateFocusState = (persisted: unknown, version: number): PersistedFocusState => {
+  if (!isRecord(persisted)) return {}
+  let state = persisted as PersistedFocusState
+  if (version < 2) state = migrateBlocks(state)
+  if (version < 3) state = { ...state, tasks: ((state.tasks ?? []) as TaskV2[]).map(migrateTask) }
+  return state
 }
 
 const getToday = (days: Record<string, Day>) => days[dayKey()] ?? currentDay()
@@ -118,18 +139,41 @@ const updateToday = (days: Record<string, Day>, update: (day: Day) => Day) => {
 export const useFocusStore = create<FocusState>()(
   persist(
     (set, get) => ({
-      tasks: initialTasks,
+      tasks: [],
       days: { [dayKey()]: currentDay() },
-      selectedTaskId: initialTasks[0].id,
+      selectedTaskId: '',
       durationMinutes: 25,
-      addTask: (title) => {
+      addTask: (title, estimatedMin) => {
         const trimmedTitle = title.trim()
         if (!trimmedTitle) return
-        const task = { id: crypto.randomUUID(), title: trimmedTitle, createdAt: Date.now() }
+        const task = createTask(trimmedTitle, estimatedMin)
         set((state) => ({
           tasks: [...state.tasks, task],
           days: updateToday(state.days, (day) => ({ ...day, taskIds: [...day.taskIds, task.id] })),
           selectedTaskId: task.id,
+        }))
+      },
+      setTaskMinutes: (taskId, minutes) => set((state) => ({
+        tasks: state.tasks.map((task) => task.id === taskId ? { ...task, estimatedMin: minutes } : task),
+      })),
+      toggleTaskDone: (taskId) => set((state) => ({
+        tasks: state.tasks.map((task) => task.id === taskId ? { ...task, done: !task.done } : task),
+      })),
+      // Los bloques de esa tarea se conservan: guardan su propio título.
+      deleteTask: (taskId) => set((state) => ({
+        tasks: state.tasks.filter((task) => task.id !== taskId),
+        days: Object.fromEntries(Object.entries(state.days).map(([date, day]) => [
+          date,
+          { ...day, taskIds: day.taskIds.filter((id) => id !== taskId) },
+        ])),
+        selectedTaskId: state.selectedTaskId === taskId ? '' : state.selectedTaskId,
+      })),
+      loadSampleTasks: () => {
+        if (get().tasks.length > 0) return
+        const tasks = sampleTaskTitles.map((title) => createTask(title))
+        set((state) => ({
+          tasks,
+          days: updateToday(state.days, (day) => ({ ...day, taskIds: tasks.map((task) => task.id) })),
         }))
       },
       selectTask: (taskId) => set({ selectedTaskId: taskId }),
@@ -207,7 +251,7 @@ export const useFocusStore = create<FocusState>()(
     {
       name: 'presencia-app-focus-v1',
       storage: createJSONStorage(() => localStorage),
-      version: 2,
+      version: 3,
       migrate: migrateFocusState,
     },
   ),
