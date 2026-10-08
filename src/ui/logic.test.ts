@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PlanTask } from '../ai/types'
-import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, stepMinutes } from './logic'
+import { FALLBACK_TITLE, focusOrb, formatTime, hoyOrb, nextBreath, proposalRows, saveAction, stepMinutes } from './logic'
 
 describe('formatTime', () => {
   it('formatea minutos y segundos con dos cifras', () => {
@@ -53,6 +53,18 @@ describe('proposalRows', () => {
       { kind: 'focus', minutes: 25, taskId: 'a' },
     ], tasks)
     expect(new Set(rows.map((row) => row.key)).size).toBe(2)
+  })
+})
+
+describe('saveAction', () => {
+  it('una fila nueva crea la tarea con los minutos editados', () => {
+    expect(saveAction({ key: 'k', title: 'Llamar al banco', minutes: 20 }))
+      .toEqual({ type: 'crear', title: 'Llamar al banco', minutes: 20 })
+  })
+
+  it('una fila que ya es una tarea solo actualiza sus minutos', () => {
+    expect(saveAction({ key: 'k', title: 'Leer', minutes: 35, taskId: 'a' }))
+      .toEqual({ type: 'actualizar', taskId: 'a', minutes: 35 })
   })
 })
 

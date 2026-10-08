@@ -42,6 +42,14 @@ export const proposalRows = (blocks: readonly ProposedBlock[], tasks: readonly P
       }
     })
 
+export type SaveAction =
+  | { type: 'actualizar'; taskId: string; minutes: number }
+  | { type: 'crear'; title: string; minutes: number }
+
+// Guardar una fila que ya es una tarea solo le pone los minutos editados; si no, crea la tarea.
+export const saveAction = ({ title, minutes, taskId }: ProposalRow): SaveAction =>
+  taskId ? { type: 'actualizar', taskId, minutes } : { type: 'crear', title, minutes }
+
 // Mientras escribes o la IA responde, el orbe escucha.
 export const hoyOrb = (draft: string, streaming: boolean): OrbState =>
   streaming || draft.trim() ? 'escucha' : 'reposo'

@@ -14,8 +14,8 @@ type HoyProps = {
   doneTaskIds: ReadonlySet<string>
   busy: boolean
   onStart: (row: ProposalRow) => void
-  onSave: (title: string) => void
-  onStartTask: (taskId: string) => void
+  onSave: (row: ProposalRow) => void
+  onStartTask: (task: Task) => void
 }
 
 const BUSY_LABEL = 'Ya hay un bloque en marcha'
@@ -89,7 +89,7 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
               </div>
               <div className="fila__acciones">
                 <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => { onStart(row); removeRow(row.key) }}>{busy ? BUSY_LABEL : 'Empezar'}</button>
-                <button className="boton" type="button" onClick={() => { onSave(row.title); removeRow(row.key) }}>Guardar</button>
+                <button className="boton" type="button" onClick={() => { onSave(row); removeRow(row.key) }}>Guardar</button>
               </div>
             </li>)}
           </ul>}
@@ -105,7 +105,7 @@ export function Hoy({ device, tasks, doneTaskIds, busy, onStart, onSave, onStart
               return <li className="fila" key={task.id}>
                 <span className={done ? 'fila__nombre fila__nombre--hecha' : 'fila__nombre'}>{task.title}</span>
                 <div className="fila__acciones">
-                  <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => onStartTask(task.id)}>{busy ? BUSY_LABEL : 'Empezar'}</button>
+                  <button className="boton boton--oscuro" type="button" disabled={busy} onClick={() => onStartTask(task)}>{busy ? BUSY_LABEL : 'Empezar'}</button>
                 </div>
               </li>
             })}

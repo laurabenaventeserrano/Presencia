@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { EnCurso, Respirar } from './components/Foco'
 import { Hoy } from './components/Hoy'
-import { dayKey, getActiveBlock, useFocusStore } from './store'
-import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow } from './ui/logic'
+import { dayKey, getActiveBlock, Task, useFocusStore } from './store'
+import { FALLBACK_TITLE, FocusPhase, formatTime, ProposalRow, saveAction } from './ui/logic'
 import './components/controls.css'
 
 type Device = 'ordenador' | 'movil' | 'reloj'
 type Screen = 'hoy' | 'curso' | 'resp'
-
-const TASK_MINUTES = 25
 
 function App() {
   return (
@@ -29,6 +27,7 @@ function Presencia({ device }: { device: Device }) {
   const selectedTaskId = useFocusStore((state) => state.selectedTaskId)
   const durationMinutes = useFocusStore((state) => state.durationMinutes)
   const addTask = useFocusStore((state) => state.addTask)
+  const setTaskMinutes = useFocusStore((state) => state.setTaskMinutes)
   const start = useFocusStore((state) => state.start)
   const startBlock = useFocusStore((state) => state.startBlock)
   const pause = useFocusStore((state) => state.pause)
@@ -83,11 +82,13 @@ function Presencia({ device }: { device: Device }) {
     setScreen('curso')
   }
 
-  const findTask = (title: string) => useFocusStore.getState().tasks.find((task) => task.title === title)
-
   const handleStart = ({ title, minutes, taskId }: ProposalRow) => handleStartBlock(title, minutes, taskId)
-  const handleSave = (title: string) => { if (!findTask(title)) addTask(title) }
-  const handleStartTask = (taskId: string) => handleStartBlock(titleOf(taskId), TASK_MINUTES, taskId)
+  const handleSave = (row: ProposalRow) => {
+    const action = saveAction(row)
+    if (action.type === 'actualizar') setTaskMinutes(action.taskId, action.minutes)
+    else addTask(action.title, action.minutes)
+  }
+  const handleStartTask = (task: Task) => handleStartBlock(task.title, task.estimatedMin, task.id)
 
   const handleClose = () => {
     if (phase === 'hecho') setDoneTitle(null)
