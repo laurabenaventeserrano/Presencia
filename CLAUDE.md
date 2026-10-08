@@ -16,3 +16,10 @@ App de foco con IA simulada. React, TypeScript y Vite. Se despliega en Vercel.
 - La IA propone, la persona decide: lo propuesto no entra en el día sin aceptarlo.
 - El timer guarda endsAt, no cuenta segundos.
 Lee SPEC.md antes de cualquier tarea: es la fuente de verdad del producto.
+
+## Diseño
+- Sistema visual oficial: Orb UI («La habitación en calma»). Está definido en DESIGN.md y se implementa en src/tokens.css.
+- Antes de tocar algo visual, usa la skill `presencia-diseno` (.claude/skills/presencia-diseno).
+- Reglas: color solo en el orbe; Inter de 200 a 400, nunca negrita; sin bordes y con una sola sombra ambiental en la tarjeta; esquinas de 8 en tarjeta y campo y de 4 en botones, y solo el orbe y los puntos son redondos.
+- Figma: https://www.figma.com/design/HYuJkcAAdL2f1HcKRH6Gvd/Presencia. Las capturas y el handoff original están en diseno/.
+- Contexto de producto y voz: PRODUCT.md.

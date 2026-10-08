@@ -10,15 +10,15 @@ Es un producto y a la vez una pieza de portfolio: tiene que demostrar criterio d
 
 ## 2. Principios de diseño
 
-El diseño final se decidirá más adelante. Por ahora, esto:
+El diseño está decidido: es la **Orb UI**, «La habitación en calma». El detalle completo (tokens, componentes y reglas) está en `DESIGN.md`. El archivo de Figma «Presencia» y las capturas de `diseno/` lo muestran.
 
-1. **Un papel con pocos elementos.** Fondo blanco, texto negro, líneas finas, mucho espacio.
+1. **Una habitación en calma con una sola luz.** Grises fríos y tinta azulada. Lo único con color es el orbe, que respira y cambia según el estado.
 2. **Una sola cosa principal por pantalla.** Lo que no es de este momento no se muestra.
-3. **Sin decoración.** Sin sombras, sin colores, sin iconos salvo que sean imprescindibles, sin tarjetas con borde. Las listas son filas separadas por una línea fina.
-4. **Los controles son texto.** "Empezar", "Guardar", "Pausar". No botones decorados.
-5. **Una tipografía del sistema y dos tamaños:** uno grande para lo principal y uno normal para el resto.
-6. **Casi sin animación.** Solo la respiración y el cambio de un estado a otro.
-7. **Todo el estilo vive en `tokens.css`.** Ningún componente escribe un color, tamaño o radio a mano. Así el diseño final se cambia en un solo archivo.
+3. **Sin decoración ni ruido.** Sin bordes, sin colores fuera del orbe, sin iconos decorativos. La única sombra es una casi invisible en la tarjeta, y las secciones se separan con una línea de 1 px.
+4. **Controles blandos y discretos.** Botones casi rectos (esquinas de 4) en tonos cercanos al fondo, y un solo botón oscuro por fila para la acción principal.
+5. **Inter en pesos finos (200–400), nunca negrita.** Lo principal pesa por tamaño, no por grosor.
+6. **Movimiento lento y orgánico.** Solo el orbe y la respiración, y nada con `prefers-reduced-motion`.
+7. **Todo el estilo vive en `tokens.css`.** Ningún componente escribe un color, tamaño o radio a mano.
 
 ## 3. Pantallas
 
