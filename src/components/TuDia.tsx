@@ -36,11 +36,12 @@ type TuDiaProps = {
   onUndo: () => void
   onAdd: () => void
   onStart: (id: string) => void
+  onLater: (id: string) => void
 }
 
-type RowProps = Pick<TuDiaProps, 'busy' | 'onRename' | 'onMinutes' | 'onRemove' | 'onStart'> & { row: DayRow; index: number; autoFocus: boolean }
+type RowProps = Pick<TuDiaProps, 'busy' | 'onRename' | 'onMinutes' | 'onRemove' | 'onStart' | 'onLater'> & { row: DayRow; index: number; autoFocus: boolean }
 
-function Row({ row, index, busy, autoFocus, onRename, onMinutes, onRemove, onStart }: RowProps) {
+function Row({ row, index, busy, autoFocus, onRename, onMinutes, onRemove, onStart, onLater }: RowProps) {
   const [typed, setTyped] = useState(String(row.plannedMin))
   const [note, setNote] = useState('')
   const titleRef = useRef<HTMLInputElement>(null)
@@ -83,6 +84,7 @@ function Row({ row, index, busy, autoFocus, onRename, onMinutes, onRemove, onSta
       <p className="fila__estado" aria-live="polite">{note}</p>
       {editable && <div className="fila__acciones">
         <button className="boton boton--oscuro" type="button" disabled={busy} aria-label={busy ? undefined : `Empezar ${name}`} onClick={() => onStart(row.id)}>{busy ? BUSY_TEXT : 'Empezar'}</button>
+        <button className="boton" type="button" aria-label={`Más tarde ${name}`} onClick={() => onLater(row.id)}>Más tarde</button>
         <button className="boton" type="button" aria-label={`Quitar bloque ${name}`} onClick={() => onRemove(row.id)}>Quitar</button>
       </div>}
       {row.status === 'done' && <div className="fila__acciones">
@@ -93,7 +95,7 @@ function Row({ row, index, busy, autoFocus, onRename, onMinutes, onRemove, onSta
 }
 
 // La lista de bloques del día. La propuesta de la IA se ve aquí como borrador editable.
-export function TuDia({ rows, busy, thinking, undo, onAnother, onRename, onMinutes, onRemove, onUndo, onAdd, onStart }: TuDiaProps) {
+export function TuDia({ rows, busy, thinking, undo, onAnother, onRename, onMinutes, onRemove, onUndo, onAdd, onStart, onLater }: TuDiaProps) {
   const [focusId, setFocusId] = useState<string | null>(null)
   const count = useRef(rows.length)
 
@@ -113,7 +115,7 @@ export function TuDia({ rows, busy, thinking, undo, onAnother, onRename, onMinut
         {undo && <>Has quitado «{undo.title || 'Sin título'}». <button className="texto-control" type="button" onClick={onUndo}>Deshacer</button></>}
       </p>
       <ul className="lista">
-        {rows.map((row, index) => <Row key={row.id} row={row} index={index} busy={busy} autoFocus={focusId === row.id} onRename={onRename} onMinutes={onMinutes} onRemove={onRemove} onStart={onStart} />)}
+        {rows.map((row, index) => <Row key={row.id} row={row} index={index} busy={busy} autoFocus={focusId === row.id} onRename={onRename} onMinutes={onMinutes} onRemove={onRemove} onStart={onStart} onLater={onLater} />)}
       </ul>
       <div className="fila__acciones">
         <button className="boton" type="button" onClick={() => { setFocusId('nuevo'); onAdd() }}>Añadir bloque</button>

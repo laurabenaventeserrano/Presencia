@@ -1,0 +1,103 @@
+import { expect, test } from '@playwright/test'
+import { ask, expectNoAxeViolations, open, rowSummaries, timeText } from './helpers'
+
+const INTENT = 'escribir la propuesta, revisar correos y llamar a Marta'
+
+test('A10 empiezo un bloque de la lista con su título y sus minutos, solo uno a la vez', async ({ page }) => {
+  await open(page)
+  await ask(page, INTENT)
+  await page.getByRole('button', { name: 'Empezar Revisar correos' }).click()
+  await expect(page.getByRole('heading', { name: 'Revisar correos' })).toBeVisible()
+  await expect(timeText(page)).toHaveText('25:00')
+  await page.getByRole('button', { name: 'Hoy' }).click()
+  await expect(page.getByRole('button', { name: 'Ya hay un bloque en marcha' }).first()).toBeDisabled()
+  expect(await rowSummaries(page)).toContain('Revisar correos · 25 min · En curso')
+})
+
+test('A11 al terminar queda «Hecho» con los minutos reales y el siguiente no arranca solo', async ({ page }) => {
+  await open(page)
+  await ask(page, INTENT)
+  await page.getByRole('button', { name: 'Empezar Escribir la propuesta' }).click()
+  await page.clock.runFor(12 * 60_000)
+  await page.getByRole('button', { name: 'Terminar' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Terminar' }).click()
+  const summary = await rowSummaries(page)
+  expect(summary[0]).toBe('Escribir la propuesta · 50 min · Hecho, 12 min')
+  expect(summary.slice(1).every((row) => row.endsWith('Pendiente'))).toBe(true)
+  await expect(page.getByRole('button', { name: 'Temporizador' })).toBeEnabled()
+})
+
+test('A12 aplazo un bloque a más tarde y a esa hora aparece un aviso suave', async ({ page }) => {
+  await open(page)
+  await ask(page, INTENT)
+  await page.getByRole('button', { name: 'Más tarde Revisar correos' }).click()
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toBeVisible()
+  await expectNoAxeViolations(page)
+  await dialog.getByRole('button', { name: '15 minutos' }).click()
+  const row = (await rowSummaries(page)).find((text) => text.startsWith('Revisar correos'))
+  expect(row).toMatch(/Más tarde, 10:15$/)
+  await expect(page.getByText('Toca: Revisar correos')).toHaveCount(0)
+  // Quince minutos (y unos segundos de margen por el tiempo que corre mientras axe revisa).
+  await page.clock.runFor(15 * 60_000 + 10_000)
+  await expect(page.getByText('Toca: Revisar correos')).toBeVisible()
+  await expectNoAxeViolations(page)
+  await page.getByRole('status').getByRole('button', { name: 'Empezar' }).click()
+  await expect(page.getByRole('heading', { name: 'Revisar correos' })).toBeVisible()
+})
+
+test('A13 al cambiar el día, la lista de ayer ya no aparece', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-10-09T23:58:00+02:00') })
+  await page.goto('/')
+  await page.clock.pauseAt(new Date('2026-10-09T23:58:01+02:00'))
+  await ask(page, INTENT)
+  await page.getByRole('button', { name: 'Más tarde Llamar a Marta' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '15 minutos' }).click()
+  await expect(page.getByRole('heading', { name: 'Tu día' })).toBeVisible()
+  await page.clock.runFor(3 * 60_000)
+  await expect(page.getByRole('heading', { name: 'Tu día' })).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Tu día' })).toHaveCount(0)
+})
+
+test('A14 el plan no se pierde al ir a En curso y volver, ni al recargar', async ({ page }) => {
+  await open(page)
+  await ask(page, INTENT)
+  await page.getByLabel('Minutos de Llamar a Marta').fill('40')
+  await page.getByLabel('Minutos de Llamar a Marta').press('Enter')
+  await page.getByRole('button', { name: 'Empezar Escribir la propuesta' }).click()
+  await page.getByRole('button', { name: 'Hoy' }).click()
+  const before = await rowSummaries(page)
+  expect(before).toContain('Llamar a Marta · 40 min · Pendiente')
+  expect(before).toContain('Escribir la propuesta · 50 min · En curso')
+  await page.reload()
+  await page.getByRole('button', { name: 'Hoy' }).click()
+  expect(await rowSummaries(page)).toEqual(before)
+})
+
+test('B4 aplazo el bloque en marcha: vuelve a Tu día con lo que le quedaba y lo trabajado cuenta', async ({ page }) => {
+  await open(page)
+  await ask(page, INTENT)
+  await page.getByRole('button', { name: 'Empezar Escribir la propuesta' }).click()
+  await page.clock.runFor(20 * 60_000)
+  await page.getByRole('button', { name: 'Más tarde' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '30 minutos' }).click()
+  await expect(page.getByRole('heading', { name: 'Tu día' })).toBeVisible()
+  const row = (await rowSummaries(page)).find((text) => text.startsWith('Escribir la propuesta'))
+  expect(row).toMatch(/Más tarde, 10:50$/)
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('presencia:v1') ?? '{}'))
+  expect(Math.round(saved.records[0].focusMs / 60_000)).toBe(20)
+  await page.getByRole('button', { name: 'Empezar Escribir la propuesta' }).click()
+  await expect(timeText(page)).toHaveText('30:00')
+})
+
+test('B4 un bloque del temporizador también se puede aplazar', async ({ page }) => {
+  await open(page)
+  await page.getByRole('button', { name: 'Temporizador' }).click()
+  await page.getByLabel('Título (opcional)').fill('Leer')
+  await page.getByRole('button', { name: 'Play' }).click()
+  await page.clock.runFor(5 * 60_000)
+  await page.getByRole('button', { name: 'Más tarde' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: '1 hora' }).click()
+  expect(await rowSummaries(page)).toEqual(['Leer · 25 min · Más tarde, 11:05'])
+})

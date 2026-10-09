@@ -10,8 +10,10 @@ export const localDate = (ms: number) => {
 }
 
 // El temporizador nunca cuenta segundos: el tiempo restante se calcula a partir de endsAt.
-export const remainingMs = (active: ActiveBlock, now: number) =>
-  active.status === 'running' ? Math.max(0, (active.endsAt ?? now) - now) : Math.max(0, active.remainingMs ?? 0)
+export const remainingMs = (active: ActiveBlock, now: number) => {
+  const left = active.status === 'running' ? (active.endsAt ?? now) - now : active.remainingMs ?? 0
+  return Math.min(active.totalMs, Math.max(0, left))
+}
 
 export const isEnded = (active: ActiveBlock, now: number) => remainingMs(active, now) === 0
 

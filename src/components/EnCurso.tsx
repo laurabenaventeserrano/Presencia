@@ -12,6 +12,7 @@ type EnCursoProps = {
   onResume: () => void
   onFinish: () => void
   onHoy: () => void
+  onLater: () => void
 }
 
 // Lo que oye un lector de pantalla: cada minuto y al terminar, nunca cada segundo (B11).
@@ -21,7 +22,7 @@ export const announcement = (active: ActiveBlock, now: number) => {
   return minutes === 1 ? 'Queda 1 minuto' : `Quedan ${minutes} minutos`
 }
 
-export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy }: EnCursoProps) {
+export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy, onLater }: EnCursoProps) {
   const [confirming, setConfirming] = useState(false)
   const ended = isEnded(active, now)
   const running = active.status === 'running'
@@ -59,6 +60,7 @@ export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy }: EnC
           <button className="boton-icono" type="button" aria-label={running ? 'Pausar' : 'Reanudar'} onClick={() => toggle()}>
             <Icon name={running ? 'pausa' : 'reanudar'} />
           </button>
+          <button className="boton" type="button" onClick={() => onLater()}>Más tarde</button>
         </div>}
 
       <Dialogo open={confirming} title="¿Terminar este bloque?" onClose={() => setConfirming(false)}>
