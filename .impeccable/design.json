@@ -1,0 +1,547 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T14:51:18.309166+00:00",
+  "title": "Design System: Presencia",
+  "extensions": {
+    "colorMeta": {
+      "fondo": {
+        "role": "neutral",
+        "displayName": "Niebla fría",
+        "canonical": "#f2f4f8",
+        "tonalRamp": [
+          "#1b2232",
+          "#2e3c56",
+          "#42557b",
+          "#566e9f",
+          "#778cb6",
+          "#9cabc9",
+          "#c3cddf",
+          "#eef1f6"
+        ]
+      },
+      "tarjeta": {
+        "role": "neutral",
+        "displayName": "Blanco tarjeta",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#424242",
+          "#5e5e5e",
+          "#7a7a7a",
+          "#969696",
+          "#b2b2b2",
+          "#d1d1d1",
+          "#f2f2f2"
+        ]
+      },
+      "pastilla": {
+        "role": "neutral",
+        "displayName": "Pastilla",
+        "canonical": "#f6f7fa",
+        "tonalRamp": [
+          "#1b2131",
+          "#2f3955",
+          "#435179",
+          "#57699d",
+          "#7988b4",
+          "#9da8c8",
+          "#c4cbde",
+          "#eff0f6"
+        ]
+      },
+      "suave": {
+        "role": "neutral",
+        "displayName": "Suave",
+        "canonical": "#f1f3f6",
+        "tonalRamp": [
+          "#1e252f",
+          "#343f51",
+          "#4a5a73",
+          "#607595",
+          "#8092ad",
+          "#a2afc3",
+          "#c7cfdb",
+          "#eff2f5"
+        ]
+      },
+      "tinta": {
+        "role": "primary",
+        "displayName": "Tinta azul noche",
+        "canonical": "#1f2430",
+        "tonalRamp": [
+          "#1e232e",
+          "#343c51",
+          "#4a5673",
+          "#607095",
+          "#808dad",
+          "#a2acc3",
+          "#c7cddb",
+          "#f0f1f5"
+        ]
+      },
+      "secundario": {
+        "role": "secondary",
+        "displayName": "Pizarra suave",
+        "canonical": "#666e80",
+        "tonalRamp": [
+          "#22252b",
+          "#3b3f4a",
+          "#545a69",
+          "#6d7588",
+          "#8b92a2",
+          "#aaafbb",
+          "#cccfd6",
+          "#f1f2f4"
+        ]
+      },
+      "sobre-oscuro": {
+        "role": "neutral",
+        "displayName": "Sobre oscuro",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#424242",
+          "#5e5e5e",
+          "#7a7a7a",
+          "#969696",
+          "#b2b2b2",
+          "#d1d1d1",
+          "#f2f2f2"
+        ]
+      },
+      "punto-apagado": {
+        "role": "neutral",
+        "displayName": "Punto apagado",
+        "canonical": "#d5d9e1",
+        "tonalRamp": [
+          "#20242d",
+          "#373f4d",
+          "#4f596e",
+          "#66748f",
+          "#8591a8",
+          "#a6aebf",
+          "#c9cfd9",
+          "#f0f2f4"
+        ]
+      },
+      "fondo-noche": {
+        "role": "neutral",
+        "displayName": "Niebla fría · Noche",
+        "canonical": "#0e1014",
+        "tonalRamp": [
+          "#1f242d",
+          "#373e4e",
+          "#4e596f",
+          "#657390",
+          "#8490a9",
+          "#a5aec0",
+          "#c9ced9",
+          "#f0f2f4"
+        ]
+      },
+      "tarjeta-noche": {
+        "role": "neutral",
+        "displayName": "Tarjeta · Noche",
+        "canonical": "#171a21",
+        "tonalRamp": [
+          "#1f242d",
+          "#363e4e",
+          "#4e586f",
+          "#657290",
+          "#848fa9",
+          "#a5adc0",
+          "#c9ced9",
+          "#f0f1f5"
+        ]
+      },
+      "pastilla-noche": {
+        "role": "neutral",
+        "displayName": "Pastilla · Noche",
+        "canonical": "#1d212a",
+        "tonalRamp": [
+          "#1f242d",
+          "#363e4e",
+          "#4d5870",
+          "#647291",
+          "#838faa",
+          "#a4adc1",
+          "#c9ceda",
+          "#f0f1f5"
+        ]
+      },
+      "suave-noche": {
+        "role": "neutral",
+        "displayName": "Suave · Noche",
+        "canonical": "#232832",
+        "tonalRamp": [
+          "#20242d",
+          "#373e4e",
+          "#4e596f",
+          "#657390",
+          "#8490a9",
+          "#a5aec0",
+          "#c9ced9",
+          "#f0f2f4"
+        ]
+      },
+      "tinta-noche": {
+        "role": "primary",
+        "displayName": "Tinta · Noche",
+        "canonical": "#f2f4f8",
+        "tonalRamp": [
+          "#1b2232",
+          "#2e3c56",
+          "#42557b",
+          "#566e9f",
+          "#778cb6",
+          "#9cabc9",
+          "#c3cddf",
+          "#eef1f6"
+        ]
+      },
+      "secundario-noche": {
+        "role": "secondary",
+        "displayName": "Pizarra · Noche",
+        "canonical": "#9aa3b2",
+        "tonalRamp": [
+          "#21252b",
+          "#39404b",
+          "#525b6b",
+          "#6a768b",
+          "#8893a5",
+          "#a8b0bd",
+          "#cbd0d7",
+          "#f1f2f4"
+        ]
+      },
+      "sobre-oscuro-noche": {
+        "role": "neutral",
+        "displayName": "Sobre oscuro · Noche",
+        "canonical": "#0e1014",
+        "tonalRamp": [
+          "#1f242d",
+          "#373e4e",
+          "#4e596f",
+          "#657390",
+          "#8490a9",
+          "#a5aec0",
+          "#c9ced9",
+          "#f0f2f4"
+        ]
+      },
+      "punto-apagado-noche": {
+        "role": "neutral",
+        "displayName": "Punto apagado · Noche",
+        "canonical": "#2d333f",
+        "tonalRamp": [
+          "#20242d",
+          "#373f4d",
+          "#4f596e",
+          "#66748f",
+          "#8591a8",
+          "#a6aebf",
+          "#c9cfd9",
+          "#f0f2f4"
+        ]
+      },
+      "orbe-coral": {
+        "role": "tertiary",
+        "displayName": "Coral",
+        "canonical": "#ee6f7a",
+        "tonalRamp": [
+          "#44080d",
+          "#770e17",
+          "#a91421",
+          "#db1a2b",
+          "#e94452",
+          "#ef7681",
+          "#f5adb3",
+          "#fce8ea"
+        ]
+      },
+      "orbe-ambar": {
+        "role": "tertiary",
+        "displayName": "Ámbar",
+        "canonical": "#f5b77f",
+        "tonalRamp": [
+          "#472506",
+          "#7b3f0a",
+          "#af5a0e",
+          "#e37512",
+          "#f0923d",
+          "#f4af71",
+          "#f8cfaa",
+          "#fdf2e7"
+        ]
+      },
+      "orbe-rosa": {
+        "role": "tertiary",
+        "displayName": "Rosa",
+        "canonical": "#f58cc0",
+        "tonalRamp": [
+          "#460626",
+          "#7a0b42",
+          "#ae0f5e",
+          "#e11479",
+          "#ee3f96",
+          "#f372b2",
+          "#f8abd1",
+          "#fde8f2"
+        ]
+      },
+      "orbe-melocoton": {
+        "role": "tertiary",
+        "displayName": "Melocotón",
+        "canonical": "#fbd2c0",
+        "tonalRamp": [
+          "#481905",
+          "#7d2c08",
+          "#b13e0b",
+          "#e6500f",
+          "#f3733a",
+          "#f6986f",
+          "#fac1a9",
+          "#fdeee7"
+        ]
+      },
+      "orbe-lila": {
+        "role": "tertiary",
+        "displayName": "Lila",
+        "canonical": "#c4b9f3",
+        "tonalRamp": [
+          "#150b41",
+          "#251371",
+          "#351ca1",
+          "#4524d1",
+          "#694de0",
+          "#917ce9",
+          "#bdb1f2",
+          "#ede9fb"
+        ]
+      },
+      "orbe-menta": {
+        "role": "tertiary",
+        "displayName": "Menta",
+        "canonical": "#b6eea3",
+        "tonalRamp": [
+          "#19410c",
+          "#2c7015",
+          "#3e9f1d",
+          "#51cf26",
+          "#73de4f",
+          "#99e77e",
+          "#c2f1b2",
+          "#eefbe9"
+        ]
+      },
+      "orbe-cielo": {
+        "role": "tertiary",
+        "displayName": "Cielo",
+        "canonical": "#b9e0f7",
+        "tonalRamp": [
+          "#082e45",
+          "#0e5077",
+          "#1372a9",
+          "#1994dc",
+          "#43acea",
+          "#76c2ef",
+          "#addbf6",
+          "#e8f5fc"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "tiempo": {
+        "displayName": "Tiempo",
+        "purpose": "Tiempo restante en En curso (96/72/44)."
+      },
+      "titulo": {
+        "displayName": "Título",
+        "purpose": "¿Qué quieres hacer hoy? (40/30)."
+      },
+      "respiracion": {
+        "displayName": "Respiración",
+        "purpose": "Inspira/Espira (28/18)."
+      },
+      "item": {
+        "displayName": "Ítem",
+        "purpose": "Propuestas, tareas y título del bloque."
+      },
+      "cuerpo": {
+        "displayName": "Cuerpo",
+        "purpose": "Respuesta de la IA."
+      },
+      "secundario": {
+        "displayName": "Secundario",
+        "purpose": "Minutos y vacíos."
+      },
+      "campo": {
+        "displayName": "Campo",
+        "purpose": "Texto escrito."
+      },
+      "enlace": {
+        "displayName": "Enlace",
+        "purpose": "Respirar."
+      },
+      "etiqueta": {
+        "displayName": "Etiqueta",
+        "purpose": "Botones y secciones."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambiente-tarjeta",
+        "value": "0 1px 3px rgba(20,30,50,.04)",
+        "purpose": "Única sombra: la tarjeta de Hoy."
+      }
+    ],
+    "motion": [
+      {
+        "name": "deriva-activa",
+        "value": "7s / 9s / 11s ease-in-out infinite",
+        "purpose": "Orbe con el timer en marcha (amplitud ×1)."
+      },
+      {
+        "name": "deriva-reposo",
+        "value": "26s / 32s / 38s ease-in-out infinite",
+        "purpose": "Orbe casi quieto (amplitud ×0.12)."
+      },
+      {
+        "name": "respirar",
+        "value": "5s ease-in-out infinite, scale .85 → 1.3",
+        "purpose": "Orbe en Respirar; texto alterna cada 2.5s."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "movil",
+        "value": "600px"
+      },
+      {
+        "name": "reloj",
+        "value": "208px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón oscuro",
+      "kind": "button",
+      "refersTo": "boton-oscuro",
+      "description": "Acción principal de la fila: Empezar.",
+      "html": "<button class=\"ds-btn-oscuro\">Empezar</button>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-btn-oscuro{font:400 14px/1 Inter,system-ui,sans-serif;height:44px;padding:0 20px;border:0;border-radius:4px;cursor:pointer;transition:opacity .2s;background:#1f2430;color:#fff;}.ds-btn-oscuro:hover{opacity:.88;}.ds-btn-oscuro:focus-visible{outline:2px solid #1f2430;outline-offset:3px;}"
+    },
+    {
+      "name": "Botón suave",
+      "kind": "button",
+      "refersTo": "boton-suave",
+      "description": "Acciones secundarias: Guardar, Hecha, Borrar.",
+      "html": "<button class=\"ds-btn-suave\">Guardar</button>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-btn-suave{font:400 14px/1 Inter,system-ui,sans-serif;height:44px;padding:0 20px;border:0;border-radius:4px;cursor:pointer;transition:opacity .2s;background:#f1f3f6;color:#1f2430;}.ds-btn-suave:hover{opacity:.8;}.ds-btn-suave:focus-visible{outline:2px solid #1f2430;outline-offset:3px;}"
+    },
+    {
+      "name": "Botón de icono",
+      "kind": "button",
+      "refersTo": "boton-icono",
+      "description": "Cerrar, pausar/reanudar (48) y −/+ en filas (44). Deshabilitado al 40 %.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-circ\" aria-label=\"Cerrar\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg></button><button class=\"ds-circ ds-circ-sm\" aria-label=\"Quitar 5 minutos\" disabled><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M6 12h12\"/></svg></button><button class=\"ds-circ ds-circ-sm\" aria-label=\"Añadir 5 minutos\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M12 6v12M6 12h12\"/></svg></button></div>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-row{display:flex;gap:8px;align-items:center;}.ds-circ{width:48px;height:48px;border:0;border-radius:4px;background:#f1f3f6;color:#1f2430;display:flex;align-items:center;justify-content:center;cursor:pointer;}.ds-circ-sm{width:44px;height:44px;}.ds-circ:disabled{opacity:.4;cursor:default;}.ds-circ:focus-visible{outline:2px solid #1f2430;outline-offset:3px;}"
+    },
+    {
+      "name": "Campo",
+      "kind": "input",
+      "refersTo": "campo",
+      "description": "Pastilla para escribir la intención, con enviar oscuro.",
+      "html": "<form class=\"ds-campo\"><input placeholder=\"Escribe lo que quieres hacer\" aria-label=\"Escribe lo que quieres hacer\"><button type=\"button\" class=\"ds-enviar\" aria-label=\"Enviar\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button></form>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-campo{width:100%;max-width:480px;display:flex;align-items:center;gap:8px;background:#f6f7fa;border-radius:8px;padding:6px 6px 6px 20px;box-sizing:border-box;}.ds-campo input{flex:1;min-width:0;height:44px;border:0;background:transparent;font:400 16px Inter,system-ui,sans-serif;color:#1f2430;}.ds-campo input::placeholder{color:#666e80;}.ds-campo input:focus-visible{outline:2px solid #1f2430;outline-offset:6px;}.ds-enviar{width:48px;height:48px;flex:none;border:0;border-radius:4px;background:#1f2430;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}.ds-enviar:focus-visible{outline:2px solid #1f2430;outline-offset:3px;}"
+    },
+    {
+      "name": "Tarjeta con fila de propuesta",
+      "kind": "card",
+      "refersTo": "tarjeta",
+      "description": "Única superficie elevada; contiene Propuesta y Tareas.",
+      "html": "<div class=\"ds-tarjeta\"><div class=\"ds-label\">Propuesta</div><div class=\"ds-item\"><div class=\"ds-head\"><span>Escribir la propuesta</span><span class=\"ds-step\"><button class=\"ds-c\" aria-label=\"Quitar 5 minutos\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M6 12h12\"/></svg></button><span class=\"ds-min\">50 min</span><button class=\"ds-c\" aria-label=\"Añadir 5 minutos\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M12 6v12M6 12h12\"/></svg></button></span></div><div class=\"ds-acts\"><button class=\"ds-b ds-b-osc\">Empezar</button><button class=\"ds-b\">Guardar</button></div></div></div>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-tarjeta{max-width:480px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(20,30,50,.04);padding:24px;display:flex;flex-direction:column;gap:20px;font-family:Inter,system-ui,sans-serif;color:#1f2430;}.ds-label{font-size:14px;color:#666e80;}.ds-item{display:flex;flex-direction:column;gap:12px;}.ds-head{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:17px;font-weight:300;}.ds-min{font-size:15px;color:#666e80;}.ds-acts{display:flex;gap:8px;align-items:center;}.ds-step{display:flex;gap:8px;align-items:center;}.ds-c{width:44px;height:44px;border:0;border-radius:4px;background:#f1f3f6;color:#1f2430;display:flex;align-items:center;justify-content:center;}.ds-b{font:400 14px/1 Inter,system-ui,sans-serif;height:44px;padding:0 20px;border:0;border-radius:4px;cursor:pointer;transition:opacity .2s;background:#f1f3f6;color:#1f2430;}.ds-b-osc{background:#1f2430;color:#fff;}"
+    },
+    {
+      "name": "Enlace",
+      "kind": "custom",
+      "refersTo": "enlace",
+      "description": "Enlace secundario subrayado: Respirar.",
+      "html": "<button class=\"ds-enlace\">Respirar</button>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-enlace{height:44px;padding:0 20px;border:0;background:transparent;color:#666e80;font:400 15px Inter,system-ui,sans-serif;text-decoration:underline;text-underline-offset:5px;cursor:pointer;}.ds-enlace:hover{color:#1f2430;}.ds-enlace:focus-visible{outline:2px solid #1f2430;outline-offset:3px;}"
+    },
+    {
+      "name": "Orbe",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "El único color: tres manchas difuminadas (16 % del tamaño). Estado Reposo.",
+      "html": "<div class=\"ds-orbe\" role=\"img\" aria-label=\"Orbe\"><div class=\"ds-orbe-in\"><i style=\"left:14%;top:14%;background:#ee6f7a;animation-duration:26s\"></i><i style=\"left:22%;top:20%;background:#f5b77f;animation-duration:32s\"></i><i style=\"left:16%;top:24%;background:#fbd2c0;animation-duration:38s\"></i></div></div>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-orbe{position:relative;width:160px;height:160px;border-radius:50%;}.ds-orbe-in{position:absolute;inset:0;border-radius:50%;filter:blur(25.6px);}.ds-orbe-in i{position:absolute;width:74%;height:74%;border-radius:50%;opacity:.95;animation:ds-drift ease-in-out infinite;}@keyframes ds-drift{0%,100%{transform:translate(-1.7%,-1.2%)}50%{transform:translate(1.4%,1%) scale(1.015)}}@media (prefers-reduced-motion:reduce){.ds-orbe-in i{animation:none}}"
+    },
+    {
+      "name": "Puntos de respiración",
+      "kind": "custom",
+      "refersTo": "punto",
+      "description": "Nueve ciclos; encendidos en tinta.",
+      "html": "<div class=\"ds-dots\"><i class=\"on\"></i><i class=\"on\"></i><i class=\"on\"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>",
+      "css": ":host{--fondo:#f2f4f8;--tarjeta:#fff;--pastilla:#f6f7fa;--suave:#f1f3f6;--tinta:#1f2430;--secundario:#666e80;--sobre-oscuro:#fff;font-family:Inter,system-ui,sans-serif;}.ds-dots{display:flex;gap:12px;}.ds-dots i{width:10px;height:10px;border-radius:50%;background:#d5d9e1;}.ds-dots i.on{background:#1f2430;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La habitación en calma",
+    "overview": "Presencia es una habitación neutra y silenciosa: grises fríos, blancos y tinta azulada. Lo único vivo en ella es una luz que respira, el orbe. Todo lo demás se retira. No hay acentos, ni bordes de línea, ni negritas, ni nada que reclame atención. La jerarquía sale del tamaño, del peso fino de Inter y de dos tonos (tinta y secundario), nunca del color ni del contraste fuerte.\n\nLa densidad es baja y vertical. Cada pantalla tiene una sola cosa principal, centrada y con aire: el orbe arriba, el título o el tiempo debajo y, en Hoy, una columna de 560 px como máximo. Los controles son blandos y discretos: formas redondas, sin borde, en tonos casi iguales al fondo. Se notan cuando los buscas, no antes. Hay un solo control oscuro por fila, para la acción principal.\n\nEl sistema tiene dos modos de luz, Día y Noche, que intercambian los mismos papeles sin cambiar la composición. El reloj vive siempre en Noche. No hay urgencia visual: ni rojos de error, ni parpadeos, ni badges, ni contadores agresivos. Tampoco ruido visual.",
+    "keyCharacteristics": [
+      "Un único elemento de color: el orbe, de tres manchas difuminadas.",
+      "Neutros fríos y tonales en Día y en Noche. La profundidad sale del tono, no de la línea.",
+      "Inter de 200 a 400. Nunca negrita.",
+      "Radios grandes: 32 en tarjetas y en el campo, 22 en botones de texto, círculos en el resto.",
+      "Composición centrada y vertical, con una cosa principal por pantalla.",
+      "Movimiento lento y orgánico, siempre desactivable con movimiento reducido."
+    ],
+    "rules": [
+      {
+        "name": "The Single Light Rule",
+        "body": "El color es exclusivo del orbe. Ningún botón, texto, estado, enlace ni gráfico usa un color de la paleta del orbe ni ningún otro tono saturado.",
+        "section": "colors"
+      },
+      {
+        "name": "The Same Room Rule",
+        "body": "Día y Noche cambian valores, nunca papeles. Cada componente usa el mismo token semántico en los dos modos.",
+        "section": "colors"
+      },
+      {
+        "name": "The Featherweight Rule",
+        "body": "Ningún texto pasa de 400. Nunca se usa negrita, ni para enfatizar ni en botones.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Line Rule",
+        "body": "No hay bordes de línea en ningún componente. La única línea permitida es el separador de 1 px en color `suave` dentro de la tarjeta.",
+        "section": "elevation"
+      },
+      {
+        "name": "The One Curve Rule",
+        "body": "El orbe es la única forma redonda del sistema, junto con los puntos de respiración. Ningún botón, campo ni tarjeta es una píldora ni un círculo.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** reservar todo el color para el orbe y elegir sus tres colores según el estado (Reposo, Escucha, Foco, Pausa, Hecho, Respirar).",
+      "**Do** usar tokens semánticos (`tinta`, `suave`, `tarjeta`…) para que el cambio entre Día y Noche sea solo de modo.",
+      "**Do** mantener una sola acción oscura por fila y mostrar el resto en suave.",
+      "**Do** reservar la curva al orbe y a los puntos: tarjetas y campo con esquinas de 8, botones con esquinas de 4.",
+      "**Do** respetar los 44 px mínimos de área táctil y el contorno de foco de 2 px.",
+      "**Do** dejar que el aire y el tamaño hagan la jerarquía: título y tiempo en 200, todo centrado."
+    ],
+    "donts": [
+      "**Don't** usar color fuera del orbe: ni acentos, ni estados de color, ni enlaces azules.",
+      "**Don't** usar pesos por encima de 400 ni negrita.",
+      "**Don't** usar píldoras ni círculos en controles o contenedores.",
+      "**Don't** añadir bordes de línea ni sombras más allá de `0 1px 3px rgba(20, 30, 50, .04)` en la tarjeta.",
+      "**Don't** usar alarmas ni urgencia visual: rojos de error, parpadeos, badges o contadores agresivos.",
+      "**Don't** añadir ruido visual: iconos decorativos, ilustraciones, texturas, degradados fuera del orbe o más de una cosa principal por pantalla."
+    ]
+  }
+}

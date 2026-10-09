@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-08T11:55:49.670Z",
+        "reason": "brief pin: design_handoff_presencia/README.md fija Inter; DESIGN.md (Orb UI elegida por la usuaria) lo adopta"
+      }
+    ]
+  }
+}
