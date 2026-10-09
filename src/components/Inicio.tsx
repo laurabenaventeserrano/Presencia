@@ -10,7 +10,8 @@ import { EnCurso } from './EnCurso'
 import { Hoy } from './Hoy'
 import { RespirarElegir, RespirarGuia } from './Respirar'
 import { Temporizador } from './Temporizador'
-import { TuDia } from './TuDia'
+import { TuDia, type Undo } from './TuDia'
+import type { PlanItem } from '../state/types'
 
 type View = 'hoy' | 'temporizador' | 'respirar' | 'curso'
 
@@ -36,6 +37,37 @@ export function Inicio() {
     const base = request ?? (plan ? { intent: plan.intent, batch: plan.batch } : { intent: '', batch: 0 })
     ask(base.intent, base.batch + 1)
   }
+  // El primer gesto sobre la propuesta la acepta: pasa a ser el plan de hoy.
+  const accept = () => {
+    if (!draft) return
+    actions.createPlan({ intent: request?.intent ?? '', batch: request?.batch ?? 0, items: draft })
+    setDraft(null)
+  }
+
+  // «Quitar» con «Deshacer» durante 8 segundos (A8).
+  const [undo, setUndo] = useState<(Undo & { item: PlanItem; index: number }) | null>(null)
+  useEffect(() => {
+    if (!undo) return
+    const timeout = window.setTimeout(() => setUndo(null), 8_000)
+    return () => window.clearTimeout(timeout)
+  }, [undo])
+
+  const edit = {
+    onRename: (id: string, title: string) => { accept(); actions.updateItem(id, { title }) },
+    onMinutes: (id: string, minutes: number) => { accept(); actions.updateItem(id, { plannedMin: minutes }) },
+    onRemove: (id: string) => {
+      accept()
+      const items = useAppStore.getState().plan?.items ?? []
+      const index = items.findIndex((item) => item.id === id)
+      if (index < 0) return
+      setUndo({ title: items[index].title, item: items[index], index })
+      actions.removeItem(id)
+    },
+    onUndo: () => { if (undo) actions.addItem({ item: undo.item, index: undo.index }); setUndo(null) },
+    onAdd: () => { accept(); actions.addItem() },
+    onStart: (id: string) => { accept(); actions.startItem(id); if (useAppStore.getState().active) setView('curso') },
+  }
+
   const rows = draft?.map((item) => ({ ...item, status: 'pending' as const })) ?? plan?.items ?? []
 
   // Sin bloque activo, En curso no tiene sentido.
@@ -91,6 +123,6 @@ export function Inicio() {
     response={stream.text}
     thinking={stream.status === 'streaming'}
   >
-    {rows.length > 0 && <TuDia rows={rows} onAnother={another} busy={stream.status === 'streaming'} />}
+    {(rows.length > 0 || undo) && <TuDia rows={rows} busy={active !== null} thinking={stream.status === 'streaming'} undo={undo} onAnother={another} {...edit} />}
   </Hoy>
 }

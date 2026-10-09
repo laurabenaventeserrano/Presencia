@@ -23,6 +23,13 @@ const run = <A extends unknown[]>(action: (state: AppState, ctx: Ctx, ...args: A
 
 export const actions = {
   createPlan: run(plan.createPlan),
+  updateItem: run(plan.updateItem),
+  removeItem: run(plan.removeItem),
+  addItem: run(plan.addItem),
+  startItem: run(plan.startItem),
+  postponeItem: run(plan.postponeItem),
+  postponeActive: run(plan.postponeActive),
+  rollDay: run(plan.rollDay),
   startTimer: run(timer.startTimer),
   startBreathing: run(timer.startBreathing),
   startBreak: run(timer.startBreak),

@@ -31,3 +31,22 @@ export const startTimer = async (page: Page, minutes: number, title = '') => {
 }
 
 export const timeText = (page: Page) => page.locator('.curso__tiempo')
+
+// Cuenta qué necesitas hacer y espera a que aparezca «Tu día».
+export const ask = async (page: Page, text: string) => {
+  await page.getByLabel('¿Qué necesitas hacer hoy?').fill(text)
+  await page.getByRole('button', { name: 'Enviar' }).click()
+  await page.clock.runFor(5_000)
+  await expect(page.getByRole('heading', { name: 'Tu día' })).toBeVisible()
+}
+
+export const rows = (page: Page) => page.getByRole('region', { name: 'Tu día' }).getByRole('listitem')
+
+// Lo que se ve en cada fila de Tu día: título (del campo o del texto), minutos y estado.
+export const rowSummaries = (page: Page) =>
+  rows(page).evaluateAll((items) => items.map((item) => {
+    const title = item.querySelector<HTMLInputElement>('.fila__titulo')?.value ?? item.querySelector('.fila__nombre')?.textContent ?? ''
+    const minutes = item.querySelector<HTMLInputElement>('.fila__numero')?.value ?? item.querySelector('.fila__valor')?.textContent?.replace(/\D/g, '') ?? ''
+    const status = item.querySelector('.fila__estado')?.textContent ?? ''
+    return `${title} · ${minutes} min · ${status}`
+  }))

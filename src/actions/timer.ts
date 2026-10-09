@@ -83,7 +83,7 @@ export const finish = (state: AppState, ctx: Ctx): AppState => {
     ? {
       ...state.plan,
       items: state.plan.items.map((item) => item.id === active.planItemId
-        ? { ...item, status: 'done' as const, doneMin: Math.round(record.focusMs / 60_000), remainingMs: undefined, laterUntil: undefined }
+        ? { ...item, status: 'done' as const, doneMin: Math.round(((item.workedMs ?? 0) + record.focusMs) / 60_000), remainingMs: undefined, laterUntil: undefined }
         : item),
     }
     : state.plan

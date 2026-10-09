@@ -26,6 +26,7 @@ export type PlanItem = {
   laterUntil?: string // ISO, si está aplazado
   remainingMs?: number // lo que le queda si se aplazó en marcha
   doneMin?: number // minutos reales si está hecho
+  workedMs?: number // lo ya trabajado antes de aplazarlo
 }
 
 export type DayPlan = {
