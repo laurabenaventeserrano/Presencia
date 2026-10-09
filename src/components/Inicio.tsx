@@ -6,7 +6,9 @@ import { usePlanStream } from '../ai/usePlanStream'
 import { useNow } from '../hooks/useNow'
 import type { PlanItem } from '../state/types'
 import { useAppStore } from '../store'
-import { localDate, tabTitle } from '../time'
+import { isEnded, localDate, tabTitle } from '../time'
+import { notifyIfHidden } from '../ui/notify'
+import { playSoftTone } from '../ui/sound'
 import { Aviso } from './Aviso'
 import { EnCurso } from './EnCurso'
 import { Hoy } from './Hoy'
@@ -28,6 +30,7 @@ const msUntilMidnight = (now: number) => {
 export function Inicio() {
   const active = useAppStore((state) => state.active)
   const plan = useAppStore((state) => state.plan)
+  const settings = useAppStore((state) => state.settings)
   const [view, setView] = useState<View>(active ? 'curso' : 'hoy')
   const now = useNow(active?.status === 'running')
   const firstRender = useRef(true)
@@ -104,6 +107,25 @@ export function Inicio() {
   const current = Math.max(clock, now)
   const due = plan?.items.find((item) => item.status === 'later' && item.laterUntil
     && new Date(item.laterUntil).getTime() <= current && !dismissed.includes(item.id))
+
+  // Al llegar a cero: tono suave y aviso del navegador si la persona los activó (E1, E2).
+  const ended = active !== null && isEnded(active, now)
+  const endedId = ended ? active.id : null
+  useEffect(() => {
+    if (!endedId) return
+    const { settings: current, active: block } = useAppStore.getState()
+    if (current.sound) playSoftTone()
+    if (current.notifications) notifyIfHidden('Presencia', `Has terminado: ${block?.title ?? 'el bloque'}`)
+  }, [endedId])
+
+  // Cuando toca un bloque aplazado, también se avisa fuera de la pestaña (E2).
+  const dueId = due?.id ?? null
+  useEffect(() => {
+    if (!dueId) return
+    const { settings: current, plan: currentPlan } = useAppStore.getState()
+    const item = currentPlan?.items.find((candidate) => candidate.id === dueId)
+    if (current.notifications && item) notifyIfHidden('Presencia', `Toca: ${item.title || 'Sin título'}`)
+  }, [dueId])
 
   const startItem = (id: string) => {
     accept()
@@ -183,7 +205,7 @@ export function Inicio() {
       response={stream.text}
       thinking={stream.status === 'streaming'}
     >
-      {(rows.length > 0 || undo) && <TuDia rows={rows} busy={active !== null} thinking={stream.status === 'streaming'} undo={undo} onAnother={another} {...edit} />}
+      {(rows.length > 0 || undo) && <TuDia rows={rows} busy={active !== null} thinking={stream.status === 'streaming'} undo={undo} trace={settings.aiTrace ? stream.lastCall : null} onAnother={another} {...edit} />}
     </Hoy>
   }
 

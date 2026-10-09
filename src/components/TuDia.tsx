@@ -1,5 +1,6 @@
 import { KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { formatDuration, totalMinutes } from '../ai/rules'
+import type { ProposePlanArgs } from '../ai/types'
 import type { PlanItem } from '../state/types'
 import { timeOfDay } from '../time'
 import { MAX_MINUTES, MIN_MINUTES, stepMinutes } from '../ui/logic'
@@ -29,6 +30,7 @@ type TuDiaProps = {
   busy: boolean
   thinking: boolean
   undo: Undo | null
+  trace: ProposePlanArgs | null
   onAnother: () => void
   onRename: (id: string, title: string) => void
   onMinutes: (id: string, minutes: number) => void
@@ -94,8 +96,21 @@ function Row({ row, index, busy, autoFocus, onRename, onMinutes, onRemove, onSta
   )
 }
 
+// «Ver lo que hace la IA» (E4): qué herramienta llamó y con qué.
+function Traza({ call }: { call: ProposePlanArgs }) {
+  const [open, setOpen] = useState(false)
+  const blocks = call.items.length
+  return (
+    <div className="traza">
+      <p>La IA llamó a <code>propose_plan</code> · {blocks} {blocks === 1 ? 'bloque' : 'bloques'}</p>
+      <button className="texto-control" type="button" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'Ocultar detalle' : 'Ver detalle'}</button>
+      {open && <pre className="traza__detalle">{JSON.stringify({ name: 'propose_plan', args: call }, null, 2)}</pre>}
+    </div>
+  )
+}
+
 // La lista de bloques del día. La propuesta de la IA se ve aquí como borrador editable.
-export function TuDia({ rows, busy, thinking, undo, onAnother, onRename, onMinutes, onRemove, onUndo, onAdd, onStart, onLater }: TuDiaProps) {
+export function TuDia({ rows, busy, thinking, undo, trace, onAnother, onRename, onMinutes, onRemove, onUndo, onAdd, onStart, onLater }: TuDiaProps) {
   const [focusId, setFocusId] = useState<string | null>(null)
   const count = useRef(rows.length)
 
@@ -121,6 +136,7 @@ export function TuDia({ rows, busy, thinking, undo, onAnother, onRename, onMinut
         <button className="boton" type="button" onClick={() => { setFocusId('nuevo'); onAdd() }}>Añadir bloque</button>
         <button className="boton" type="button" onClick={onAnother} disabled={thinking}>Otra propuesta</button>
       </div>
+      {trace && <Traza call={trace} />}
     </section>
   )
 }

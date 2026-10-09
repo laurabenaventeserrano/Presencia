@@ -43,3 +43,15 @@
 .aviso { position: fixed; z-index: 1; right: var(--espacio-4); bottom: var(--espacio-4); left: var(--espacio-4); max-width: var(--columna); margin: 0 auto; padding: var(--espacio-4); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--espacio-3); border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); }
 .aviso__texto { font-size: var(--texto-item); font-weight: var(--peso-ligero); }
 .aviso-fin { display: flex; flex-direction: column; align-items: center; gap: var(--espacio-3); }
+
+/* Ajustes. */
+.ajuste { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--espacio-3); }
+.ajuste__texto { flex: 1 1 var(--ancho-titulo-fila); display: flex; flex-direction: column; gap: var(--espacio-1); }
+.ajuste__nombre { font-size: var(--texto-item); font-weight: var(--peso-ligero); }
+.ajuste__ayuda { color: var(--secundario); font-size: var(--texto-secundario); }
+.ajuste__ayuda:empty { display: none; }
+.boton[role='switch'][aria-checked='true'] { color: var(--sobre-oscuro); background: var(--boton-oscuro); }
+
+/* «Ver lo que hace la IA» (E4). */
+.traza { display: flex; flex-direction: column; gap: var(--espacio-2); color: var(--secundario); font-size: var(--texto-secundario); }
+.traza__detalle { overflow-x: auto; margin: 0; padding: var(--espacio-3); border-radius: var(--radio-boton); color: var(--tinta); background: var(--pastilla); font-size: var(--texto-etiqueta); white-space: pre-wrap; overflow-wrap: anywhere; }

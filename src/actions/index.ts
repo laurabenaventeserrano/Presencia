@@ -3,6 +3,7 @@ import { saveState } from '../storage'
 import { useAppStore } from '../store'
 import { localDate } from '../time'
 import * as plan from './plan'
+import * as settings from './settings'
 import * as timer from './timer'
 
 // El único sitio que aplica una acción al estado y la guarda. La interfaz y las herramientas pasan por aquí.
@@ -22,6 +23,7 @@ const run = <A extends unknown[]>(action: (state: AppState, ctx: Ctx, ...args: A
   (...args: A) => commit(action(useAppStore.getState(), ctx(), ...args))
 
 export const actions = {
+  setSetting: run(settings.setSetting),
   createPlan: run(plan.createPlan),
   updateItem: run(plan.updateItem),
   removeItem: run(plan.removeItem),
