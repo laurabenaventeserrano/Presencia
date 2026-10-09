@@ -1,25 +1,22 @@
+import type { BlockKind } from '../state/types'
+
 export type TaskKind = 'deep' | 'review' | 'admin'
 
-export type BlockKind = 'focus' | 'break' | 'breathe'
+// Un bloque propuesto por la IA. Es un borrador: no entra en el día hasta que la persona lo toca.
+export type DraftItem = { kind: BlockKind; title: string; plannedMin: number }
 
-// La IA solo necesita saber cómo se llama cada cosa.
-export type PlanTask = { id: string; title: string }
+export type ProposePlanArgs = { summary: string; items: DraftItem[] }
 
 export type PlanInput = {
-  intention: string
-  tasks: PlanTask[]
+  intent: string // lo que escribió la persona; vacío para «Sugiéreme un día»
+  date: string // 'YYYY-MM-DD'
+  batch: number // «Otra propuesta» sube la tanda
 }
 
-export type ProposedBlock = {
-  kind: BlockKind
-  minutes: number
-  title?: string
-  taskId?: string
-}
-
+// La IA no toca la app: escribe un texto palabra a palabra y llama a una herramienta.
 export type PlanEvent =
   | { type: 'token'; text: string }
-  | { type: 'blocks'; blocks: ProposedBlock[] }
+  | { type: 'tool_call'; name: 'propose_plan'; args: ProposePlanArgs }
   | { type: 'done' }
 
 export interface AIProvider {

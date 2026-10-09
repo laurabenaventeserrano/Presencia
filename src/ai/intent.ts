@@ -1,31 +1,31 @@
-import type { PlanTask, TaskKind } from './types'
+import type { TaskKind } from './types'
 
 export const normalize = (text: string) => text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 
 export const kindKeywords: Record<Exclude<TaskKind, 'admin'>, string[]> = {
-  deep: ['escrib', 'dise', 'program', 'investig'],
-  review: ['revis', 'feedback', 'lee'],
+  deep: ['escrib', 'dise', 'program', 'investig', 'redact', 'prepar', 'estudi', 'crear'],
+  review: ['revis', 'feedback', 'lee', 'corregi', 'analiz', 'planific'],
 }
 
-const adminKeywords = ['respond', 'email', 'correo', 'llam', 'reunion', 'paga', 'pago']
-const knownKeywords = [...kindKeywords.deep, ...kindKeywords.review, ...adminKeywords]
+const NUMBER_WORDS: Record<string, number> = { una: 1, un: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8 }
+const AMOUNT = `(\\d+|${Object.keys(NUMBER_WORDS).join('|')})`
+const BUDGET_PATTERN = new RegExp(`\\b(media hora|hora y media|${AMOUNT}\\s*(horas?|minutos?|min)(\\s+y\\s+media)?)\\b`, 'i')
+const STARTER_PATTERN = /^(hoy\s+)?(quiero|necesito|tengo que|tengo|voy a|debo)\s+/i
 
-const stopwords = new Set([
-  'para', 'pero', 'sobre', 'entre', 'desde', 'hasta', 'antes', 'despues', 'como', 'cuando', 'donde', 'porque',
-  'unos', 'unas', 'esta', 'este', 'esto', 'estas', 'estos', 'todo', 'toda', 'todos', 'todas', 'otro', 'otra',
-  'algo', 'hacer', 'tengo', 'quiero', 'necesito', 'solo', 'tambien', 'mucho', 'poco', 'luego',
-])
+// Restos que quedan al quitar el tiempo disponible («tengo tres horas» → «tengo»).
+const FILLER = /^(hoy|tengo|necesito|quiero|y|solo|unas?)$/
 
-const BUDGET_PATTERN = /\b(media hora|una hora|(\d+)\s*(horas?|minutos?|min))\b/i
-const STARTER_PATTERN = /^(quiero|necesito|tengo que|voy a)\s+/i
+const amountOf = (word: string) => NUMBER_WORDS[word] ?? Number(word)
 
-export const parseBudget = (intention: string): number | null => {
-  const match = normalize(intention).match(BUDGET_PATTERN)
+// Lee el tiempo disponible si lo dices: «tengo tres horas», «90 minutos», «hora y media».
+export const parseBudget = (intent: string): number | null => {
+  const match = normalize(intent).match(BUDGET_PATTERN)
   if (!match) return null
   if (match[1] === 'media hora') return 30
-  if (match[1] === 'una hora') return 60
-  const amount = Number(match[2])
-  return match[3].startsWith('hora') ? amount * 60 : amount
+  if (match[1] === 'hora y media') return 90
+  const amount = amountOf(match[2])
+  const half = match[4] ? 30 : 0
+  return match[3].startsWith('hora') ? amount * 60 + half : amount
 }
 
 const stripStarters = (fragment: string) => {
@@ -34,39 +34,10 @@ const stripStarters = (fragment: string) => {
   return text
 }
 
-// Devuelve los trozos tal como se escribieron (con tildes) para poder mostrarlos.
-export const extractIntents = (intention: string): string[] =>
-  intention
+// Separa las cosas que has dicho, tal como se escribieron (con tildes) para poder mostrarlas.
+export const extractIntents = (intent: string): string[] =>
+  intent
     .replace(new RegExp(BUDGET_PATTERN.source, 'gi'), ' ')
-    .split(/\s+y\s+|[,;]/i)
+    .split(/\s+y\s+|[,;\n]/i)
     .map(stripStarters)
-    .filter((fragment) => fragment.length > 0)
-
-const significantWords = (text: string) =>
-  normalize(text).split(/[^a-z0-9]+/).filter((word) => word.length > 3 && !stopwords.has(word))
-
-const bestMatch = (intent: string, tasks: readonly PlanTask[]): PlanTask | undefined => {
-  const words = new Set(significantWords(intent))
-  let best: PlanTask | undefined
-  let bestScore = 0
-  for (const task of tasks) {
-    const score = significantWords(task.title).filter((word) => words.has(word)).length
-    if (score > bestScore) {
-      best = task
-      bestScore = score
-    }
-  }
-  return best
-}
-
-export const matchTasks = (intents: readonly string[], tasks: readonly PlanTask[]): PlanTask[] =>
-  intents.reduce<PlanTask[]>((matched, intent, index) => {
-    const task = bestMatch(intent, tasks) ?? { id: `intent-${index}`, title: intent }
-    return matched.some((item) => item.id === task.id) ? matched : [...matched, task]
-  }, [])
-
-export const isUnderstood = (intent: string, tasks: readonly PlanTask[]): boolean => {
-  if (bestMatch(intent, tasks)) return true
-  const text = normalize(intent)
-  return knownKeywords.some((keyword) => text.includes(keyword))
-}
+    .filter((fragment) => fragment.length > 0 && !FILLER.test(normalize(fragment)))

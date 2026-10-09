@@ -1,107 +1,78 @@
 import { describe, expect, it } from 'vitest'
-import { buildBlocks, kindOf, minutesFor, orderByEnergy } from './rules'
-import type { PlanTask, ProposedBlock } from './types'
+import { buildPlan, formatDuration, kindOf, summarize } from './rules'
 
-const task = (id: string, title: string): PlanTask => ({ id, title })
+const DATE = '2026-10-09'
+const plan = (intent: string, batch = 0, date = DATE) => buildPlan({ intent, date, batch })
+const focus = (items: ReturnType<typeof plan>) => items.filter((item) => item.kind === 'focus')
 
 describe('kindOf', () => {
-  it('clasifica "diseñar la pantalla" como deep y "responder emails" como admin', () => {
-    expect(kindOf('diseñar la pantalla')).toBe('deep')
-    expect(kindOf('responder emails')).toBe('admin')
-  })
-
-  it('clasifica igual con y sin tilde', () => {
-    expect(kindOf('disenar')).toBe(kindOf('diseñar'))
-    expect(kindOf('DISEÑAR')).toBe('deep')
+  it('distingue trabajo profundo, revisión y gestiones, con y sin tilde', () => {
+    expect(kindOf('Diseñar la pantalla')).toBe('deep')
+    expect(kindOf('disenar')).toBe('deep')
+    expect(kindOf('Revisar correos')).toBe('review')
+    expect(kindOf('Llamar a Marta')).toBe('admin')
   })
 })
 
-describe('orderByEnergy', () => {
-  it('ordena el trabajo profundo antes que las gestiones', () => {
-    const tasks = [
-      task('a', 'Responder emails'),
-      task('b', 'Revisar el informe'),
-      task('c', 'Escribir el artículo'),
-      task('d', 'Pagar facturas'),
-      task('e', 'Programar la API'),
-    ]
-    expect(orderByEnergy(tasks).map((t) => t.id)).toEqual(['c', 'e', 'b', 'a', 'd'])
-  })
-
-  it('no modifica el array original', () => {
-    const tasks = [task('a', 'Responder emails'), task('b', 'Escribir el artículo')]
-    const snapshot = [...tasks]
-    orderByEnergy(tasks)
-    expect(tasks).toEqual(snapshot)
-  })
-})
-
-describe('minutesFor', () => {
-  it('asigna 50, 25 y 15 minutos según el tipo', () => {
-    expect(minutesFor[kindOf('Investigar usuarios')]).toBe(50)
-    expect(minutesFor[kindOf('Leer el feedback')]).toBe(25)
-    expect(minutesFor[kindOf('Llamar al banco')]).toBe(15)
-  })
-})
-
-describe('buildBlocks', () => {
-  it('ignora tareas hechas y no deja una pausa después del último bloque', () => {
-    const tasks = [task('a', 'Responder emails'), task('b', 'Escribir el artículo'), task('c', 'Revisar el informe')]
-    const blocks = buildBlocks({ intention: '', tasks }, new Set(['c']))
-    expect(blocks).toEqual([
-      { kind: 'focus', minutes: 50, title: 'Escribir el artículo', taskId: 'b' },
-      { kind: 'break', minutes: 5 },
-      { kind: 'focus', minutes: 15, title: 'Responder emails', taskId: 'a' },
-    ])
-    expect(blocks[blocks.length - 1].kind).toBe('focus')
-  })
-
-  const tasks = [
-    task('write', 'Escribir la propuesta del proyecto'),
-    task('email', 'Responder emails pendientes'),
-    task('review', 'Revisar el contrato con el cliente'),
-    task('design', 'Diseñar la pantalla de inicio'),
-    task('bills', 'Pagar las facturas del mes'),
-  ]
-  const plan = (intention: string) => buildBlocks({ intention, tasks })
-  const focusMinutes = (blocks: ProposedBlock[]) =>
-    blocks.filter((block) => block.kind === 'focus').reduce((total, block) => total + block.minutes, 0)
-
-  it('dos frases distintas dan planes distintos', () => {
-    const first = plan('Quiero escribir la propuesta')
-    const second = plan('Tengo que pagar las facturas y responder emails')
-    expect(first).toEqual([{ kind: 'focus', minutes: 50, title: 'Escribir la propuesta del proyecto', taskId: 'write' }])
-    expect(second).toEqual([
-      { kind: 'focus', minutes: 15, title: 'Pagar las facturas del mes', taskId: 'bills' },
-      { kind: 'break', minutes: 5 },
-      { kind: 'focus', minutes: 15, title: 'Responder emails pendientes', taskId: 'email' },
+describe('buildPlan', () => {
+  it('A2 convierte lo que cuentas en bloques con título y minutos, lo más exigente antes', () => {
+    const items = plan('escribir la propuesta, revisar correos y llamar a Marta')
+    expect(focus(items).map((item) => [item.title, item.plannedMin])).toEqual([
+      ['Escribir la propuesta', 50],
+      ['Revisar correos', 25],
+      ['Llamar a Marta', 15],
     ])
   })
 
-  it('una intención entendida sin tarea parecida crea una tarea temporal', () => {
-    expect(plan('llamar al banco')).toEqual([{ kind: 'focus', minutes: 15, title: 'llamar al banco', taskId: 'intent-0' }])
+  it('A3 siempre hay plan: un texto sin sentido es el título de un único bloque', () => {
+    expect(plan('asdf')).toEqual([{ kind: 'focus', title: 'Asdf', plannedMin: 15 }])
   })
 
-  it('"fjnewj" da una lista vacía', () => {
-    expect(plan('fjnewj')).toEqual([])
+  it('A4 con el campo vacío sugiere un día variado de 3 a 4 bloques de foco', () => {
+    const items = focus(plan(''))
+    expect(items.length).toBeGreaterThanOrEqual(3)
+    expect(items.length).toBeLessThanOrEqual(4)
+    expect(new Set(items.map((item) => item.title)).size).toBe(items.length)
   })
 
-  it('"tengo una hora" limita el foco a 60 minutos', () => {
-    const intention = 'Diseñar la pantalla, revisar el contrato y responder emails'
-    expect(focusMinutes(plan(intention))).toBeGreaterThan(60)
-    const limited = plan(`${intention}, tengo una hora`)
-    expect(focusMinutes(limited)).toBeLessThanOrEqual(60)
-    expect(limited).toEqual([{ kind: 'focus', minutes: 50, title: 'Diseñar la pantalla de inicio', taskId: 'design' }])
+  it('A5 otra tanda cambia la lista entera y la misma tanda la repite', () => {
+    const intent = 'escribir la propuesta, revisar correos y llamar a Marta'
+    const batches = [0, 1, 2, 3].map((batch) => plan(intent, batch))
+    for (let i = 1; i < batches.length; i++) {
+      const before = focus(batches[i - 1])
+      const after = focus(batches[i])
+      // Ningún bloque queda igual que en la tanda anterior.
+      expect(after.every((item) => !before.some((old) => old.title === item.title && old.plannedMin === item.plannedMin))).toBe(true)
+    }
+    expect(plan(intent, 2)).toEqual(plan(intent, 2))
+    expect(plan('', 1)).toEqual(plan('', 1))
   })
 
-  it('con solo un presupuesto usa las tareas pendientes recortadas', () => {
-    const limited = plan('90 minutos')
-    expect(focusMinutes(limited)).toBeLessThanOrEqual(90)
-    expect(limited.length).toBeGreaterThan(0)
+  it('A5 el día también forma parte de la semilla', () => {
+    const days = ['2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12'].map((date) => plan('', 0, date).map((item) => item.title).join())
+    expect(new Set(days).size).toBeGreaterThan(1)
   })
 
-  it('la misma frase da siempre el mismo resultado', () => {
-    const intention = 'Quiero diseñar la pantalla y revisar el contrato, tengo 2 horas'
-    expect(plan(intention)).toEqual(plan(intention))
+  it('A15 una lista larga incluye un Respirar de 3 minutos entre bloques de foco', () => {
+    const items = plan('escribir la propuesta, revisar correos y llamar a Marta')
+    const index = items.findIndex((item) => item.kind === 'breathe')
+    expect(items[index]).toEqual({ kind: 'breathe', title: 'Respirar', plannedMin: 3 })
+    expect(index).toBeGreaterThan(0)
+    expect(index).toBeLessThan(items.length - 1)
+    expect(plan('escribir la propuesta').some((item) => item.kind === 'breathe')).toBe(false)
+  })
+
+  it('lee el tiempo disponible y recorta sin dejar el plan vacío', () => {
+    const items = plan('escribir el informe, diseñar la portada y revisar correos, tengo una hora')
+    expect(focus(items).reduce((total, item) => total + item.plannedMin, 0)).toBeLessThanOrEqual(60)
+    expect(plan('escribir el libro, tengo 10 minutos')).toHaveLength(1)
+  })
+})
+
+describe('summarize', () => {
+  it('resume en una frase con el tiempo total', () => {
+    expect(summarize([{ kind: 'focus', title: 'A', plannedMin: 50 }, { kind: 'focus', title: 'B', plannedMin: 85 }])).toBe('Te propongo 2 bloques, 2 h 15 min en total.')
+    expect(formatDuration(45)).toBe('45 min')
+    expect(formatDuration(60)).toBe('1 h')
   })
 })

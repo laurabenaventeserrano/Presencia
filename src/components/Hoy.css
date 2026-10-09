@@ -29,3 +29,7 @@
 .fila__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espacio-2); }
 
 .vistas { display: flex; justify-content: center; }
+
+.tu-dia__cabecera { display: flex; align-items: baseline; justify-content: space-between; gap: var(--espacio-3); }
+.fila__estado { color: var(--secundario); font-size: var(--texto-secundario); }
+.campo-ayuda { color: var(--secundario); font-size: var(--texto-secundario); text-align: center; }

@@ -14,20 +14,25 @@ type HoyProps = {
   onTimer: () => void
   onBreath: () => void
   onGoToBlock: () => void
-  onAsk?: (intent: string) => void
+  onAsk: (intent: string) => void
+  onSuggest: () => void
+  response: string
+  thinking: boolean
   children?: ReactNode
 }
 
-export function Hoy({ active, now, onTimer, onBreath, onGoToBlock, onAsk, children }: HoyProps) {
+export function Hoy({ active, now, onTimer, onBreath, onGoToBlock, onAsk, onSuggest, response, thinking, children }: HoyProps) {
   const [intent, setIntent] = useState('')
   const busy = active !== null
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = intent.trim()
-    if (!trimmed || !onAsk) return
+    if (!trimmed) return
     onAsk(trimmed)
+    setIntent('')
   }
+  const empty = !intent.trim()
 
   return (
     <section className="hoy" aria-label="Hoy">
@@ -37,7 +42,7 @@ export function Hoy({ active, now, onTimer, onBreath, onGoToBlock, onAsk, childr
       </button>}
 
       <div className="caja-orbe caja-orbe--hoy">
-        <Orb state="reposo" size="hoy" />
+        <Orb state={thinking || !empty ? 'escucha' : 'reposo'} size="hoy" />
       </div>
 
       <form className="formulario" onSubmit={handleSubmit}>
@@ -51,10 +56,16 @@ export function Hoy({ active, now, onTimer, onBreath, onGoToBlock, onAsk, childr
             value={intent}
             onChange={(event) => setIntent(event.target.value)}
             autoComplete="off"
+            aria-describedby={empty ? 'intencion-ayuda' : undefined}
           />
-          <button className="boton-icono boton-icono--oscuro" type="submit" aria-label="Enviar" disabled={!intent.trim()}><Icon name="flecha" /></button>
+          <button className="boton-icono boton-icono--oscuro" type="submit" aria-label="Enviar" disabled={empty}><Icon name="flecha" /></button>
         </div>
+        {empty && <p id="intencion-ayuda" className="campo-ayuda">
+          Escribe qué necesitas hacer para enviarlo, o deja que te proponga uno. <button className="texto-control" type="button" onClick={onSuggest}>Sugiéreme un día</button>
+        </p>}
       </form>
+
+      {response && <p className="hoy__respuesta" aria-live="polite">{response}</p>}
 
       {children}
 

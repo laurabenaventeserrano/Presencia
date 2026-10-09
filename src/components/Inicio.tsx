@@ -1,21 +1,42 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { actions } from '../actions'
+import type { DraftRow } from '../actions/plan'
+import { createMockProvider } from '../ai/mock-provider'
+import { usePlanStream } from '../ai/usePlanStream'
 import { useAppStore } from '../store'
-import { tabTitle } from '../time'
+import { localDate, tabTitle } from '../time'
 import { useNow } from '../hooks/useNow'
 import { EnCurso } from './EnCurso'
 import { Hoy } from './Hoy'
 import { RespirarElegir, RespirarGuia } from './Respirar'
 import { Temporizador } from './Temporizador'
+import { TuDia } from './TuDia'
 
 type View = 'hoy' | 'temporizador' | 'respirar' | 'curso'
 
 // Casi todo ocurre en esta página: Hoy, el temporizador y el bloque en curso.
 export function Inicio() {
   const active = useAppStore((state) => state.active)
+  const plan = useAppStore((state) => state.plan)
   const [view, setView] = useState<View>(active ? 'curso' : 'hoy')
   const now = useNow(active?.status === 'running')
   const firstRender = useRef(true)
+
+  // La propuesta de la IA es un borrador: vive aquí hasta el primer gesto de la persona sobre ella.
+  const provider = useMemo(() => createMockProvider(), [])
+  const [request, setRequest] = useState<{ intent: string; batch: number } | null>(null)
+  const [draft, setDraft] = useState<DraftRow[] | null>(null)
+  const stream = usePlanStream(provider, (args) => setDraft(args.items.map((item) => ({ ...item, id: crypto.randomUUID() }))))
+
+  const ask = (intent: string, batch = 0) => {
+    setRequest({ intent, batch })
+    void stream.ask({ intent, date: localDate(Date.now()), batch })
+  }
+  const another = () => {
+    const base = request ?? (plan ? { intent: plan.intent, batch: plan.batch } : { intent: '', batch: 0 })
+    ask(base.intent, base.batch + 1)
+  }
+  const rows = draft?.map((item) => ({ ...item, status: 'pending' as const })) ?? plan?.items ?? []
 
   // Sin bloque activo, En curso no tiene sentido.
   const shown: View = view === 'curso' && !active ? 'hoy' : view
@@ -65,5 +86,11 @@ export function Inicio() {
     onTimer={() => setView('temporizador')}
     onBreath={() => setView('respirar')}
     onGoToBlock={() => setView('curso')}
-  />
+    onAsk={(intent) => ask(intent)}
+    onSuggest={() => ask('')}
+    response={stream.text}
+    thinking={stream.status === 'streaming'}
+  >
+    {rows.length > 0 && <TuDia rows={rows} onAnother={another} busy={stream.status === 'streaming'} />}
+  </Hoy>
 }
