@@ -10,7 +10,7 @@ const EXTEND_MS = 5 * 60_000
 type StartInput = { kind: BlockKind; title: string; minutes: number; planItemId?: string; resumeMs?: number }
 
 // Solo puede haber un bloque activo: si ya hay uno, no hace nada.
-export const startBlock = (state: AppState, input: StartInput, ctx: Ctx): AppState => {
+export const startBlock = (state: AppState, ctx: Ctx, input: StartInput): AppState => {
   if (state.active) return state
   const totalMs = input.resumeMs ?? input.minutes * 60_000
   const active: ActiveBlock = {
@@ -28,14 +28,14 @@ export const startBlock = (state: AppState, input: StartInput, ctx: Ctx): AppSta
   return { ...state, active }
 }
 
-export const startTimer = (state: AppState, input: { title: string; minutes: number }, ctx: Ctx) =>
-  startBlock(state, { kind: 'focus', title: input.title.trim() || UNTITLED, minutes: input.minutes }, ctx)
+export const startTimer = (state: AppState, ctx: Ctx, input: { title: string; minutes: number }) =>
+  startBlock(state, ctx, { kind: 'focus', title: input.title.trim() || UNTITLED, minutes: input.minutes })
 
-export const startBreathing = (state: AppState, input: { minutes: number }, ctx: Ctx) =>
-  startBlock(state, { kind: 'breathe', title: 'Respirar', minutes: input.minutes }, ctx)
+export const startBreathing = (state: AppState, ctx: Ctx, input: { minutes: number }) =>
+  startBlock(state, ctx, { kind: 'breathe', title: 'Respirar', minutes: input.minutes })
 
 export const startBreak = (state: AppState, ctx: Ctx) =>
-  startBlock(state, { kind: 'break', title: 'Descanso', minutes: BREAK_MINUTES }, ctx)
+  startBlock(state, ctx, { kind: 'break', title: 'Descanso', minutes: BREAK_MINUTES })
 
 // Al pausar se congela lo que queda; endsAt desaparece.
 export const pause = (state: AppState, ctx: Ctx): AppState => {

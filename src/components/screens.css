@@ -1,0 +1,40 @@
+/* Pantallas de Presencia. Todo sale de tokens.css. */
+
+.pantalla { position: relative; flex: 1; width: 100%; min-height: 100vh; min-height: 100dvh; padding: var(--pantalla-pad); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--pantalla-gap); }
+.pantalla--columna { justify-content: flex-start; max-width: var(--columna); margin: 0 auto; padding: var(--pad-arriba) var(--pad-lados) var(--pad-abajo); }
+.pantalla__volver { position: absolute; top: var(--cerrar-inset); left: var(--cerrar-inset); }
+.pantalla__titulo { font-size: var(--texto-titulo); font-weight: var(--peso-fino); letter-spacing: var(--tracking-titulo); line-height: var(--interlineado-titulo); text-align: center; text-wrap: balance; }
+.pantalla__titulo:focus { outline: none; }
+.pantalla__texto { color: var(--secundario); font-size: var(--texto-cuerpo); text-align: center; text-wrap: pretty; }
+
+/* Control de texto discreto: «Hoy», «Ir al bloque». */
+.texto-control { min-width: var(--control-fila); min-height: var(--control-fila); display: inline-flex; align-items: center; justify-content: center; padding: 0 var(--espacio-3); border: 0; border-radius: var(--radio-boton); color: var(--secundario); background: transparent; font-size: var(--texto-etiqueta); font-weight: var(--peso-normal); text-decoration: none; transition: color var(--transicion); }
+.texto-control:hover { color: var(--tinta); }
+
+.acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--espacio-2); }
+.nota { color: var(--secundario); font-size: var(--texto-secundario); text-align: center; }
+
+/* Franja del bloque en marcha, arriba de Hoy (B8). */
+.franja { width: 100%; min-height: var(--control-fila); display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); padding: 0 var(--espacio-4); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); text-align: start; transition: opacity var(--transicion); }
+.franja:hover { opacity: var(--opacidad-hover); }
+.franja__titulo { min-width: 0; font-size: var(--texto-item); font-weight: var(--peso-ligero); overflow-wrap: anywhere; }
+.franja__tiempo { flex: none; color: var(--secundario); font-size: var(--texto-secundario); font-variant-numeric: tabular-nums; }
+
+/* Formularios del temporizador y de Respirar. */
+.formulario { width: 100%; max-width: var(--columna); display: flex; flex-direction: column; align-items: stretch; gap: var(--pantalla-gap); }
+.campo-etiqueta { display: flex; flex-direction: column; gap: var(--espacio-2); color: var(--secundario); font-size: var(--texto-etiqueta); }
+.campo-simple { width: 100%; height: var(--control-fila); padding: 0 var(--espacio-4); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--pastilla); font-size: var(--texto-campo); font-weight: var(--peso-normal); }
+.campo-simple::placeholder { color: var(--secundario); }
+.opciones { display: flex; flex-wrap: wrap; gap: var(--espacio-2); }
+.boton[aria-pressed='true'] { color: var(--sobre-oscuro); background: var(--boton-oscuro); }
+
+/* En curso. */
+.curso__bloque { max-width: var(--columna); color: var(--secundario); font-size: var(--texto-bloque); font-weight: var(--peso-ligero); text-align: center; text-wrap: balance; }
+.curso__tiempo { font-size: var(--texto-tiempo); font-weight: var(--peso-fino); letter-spacing: var(--tracking-tiempo); line-height: var(--interlineado-tiempo); font-variant-numeric: tabular-nums; }
+.curso__controles { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--controles-gap); }
+
+/* Diálogo (B5). */
+.dialogo { width: min(100% - 2 * var(--espacio-6), var(--columna)); padding: var(--espacio-6); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); }
+.dialogo[open] { display: flex; flex-direction: column; gap: var(--pantalla-gap); }
+.dialogo::backdrop { background: var(--velo); }
+.dialogo__titulo { font-size: var(--texto-item); font-weight: var(--peso-normal); }

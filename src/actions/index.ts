@@ -16,8 +16,9 @@ const commit = (next: AppState) => {
   saveState(next)
 }
 
-const run = <A extends unknown[]>(action: (state: AppState, ...args: [...A, Ctx]) => AppState) =>
-  (...args: A) => commit(action(useAppStore.getState(), ...args, ctx()))
+// Primero el estado y el contexto; después, lo que pase la interfaz. Un argumento de más (como el evento de un clic) se ignora.
+const run = <A extends unknown[]>(action: (state: AppState, ctx: Ctx, ...args: A) => AppState) =>
+  (...args: A) => commit(action(useAppStore.getState(), ctx(), ...args))
 
 export const actions = {
   startTimer: run(timer.startTimer),

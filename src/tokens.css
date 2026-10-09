@@ -114,6 +114,10 @@
   --deriva-activa-3: 11s;
   --respiracion: 5s;
   --transicion: .2s ease;
+
+  /* Piezas que DESIGN.md no define (decisiones de diseño pendientes) */
+  --velo: color-mix(in srgb, var(--tinta) 24%, transparent);
+  --ancho-minutos-campo: 6ch;
 }
 
 /* Color · Noche (sistema, salvo que la pantalla fije Día) */

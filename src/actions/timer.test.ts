@@ -6,7 +6,7 @@ import { state, testCtx } from './test-utils'
 describe('temporizador por endsAt', () => {
   it('B2 la cuenta atrás sale de endsAt y baja con el tiempo', () => {
     const t = testCtx()
-    const s = startTimer(state(), { title: 'Escribir', minutes: 25 }, t.ctx())
+    const s = startTimer(state(), t.ctx(), { title: 'Escribir', minutes: 25 })
     expect(s.active?.endsAt).toBe(t.now() + 25 * 60_000)
     t.advance(60_000)
     expect(remainingMs(s.active!, t.now())).toBe(24 * 60_000)
@@ -14,12 +14,12 @@ describe('temporizador por endsAt', () => {
 
   it('B1 sin título se llama «Sin título»', () => {
     const t = testCtx()
-    expect(startTimer(state(), { title: '  ', minutes: 15 }, t.ctx()).active?.title).toBe('Sin título')
+    expect(startTimer(state(), t.ctx(), { title: '  ', minutes: 15 }).active?.title).toBe('Sin título')
   })
 
   it('B3 pausar congela el tiempo y reanudar sigue donde estaba', () => {
     const t = testCtx()
-    let s = startTimer(state(), { title: 'Leer', minutes: 10 }, t.ctx())
+    let s = startTimer(state(), t.ctx(), { title: 'Leer', minutes: 10 })
     t.advance(2 * 60_000)
     s = pause(s, t.ctx())
     expect(s.active).toMatchObject({ status: 'paused', remainingMs: 8 * 60_000, endsAt: undefined })
@@ -31,14 +31,14 @@ describe('temporizador por endsAt', () => {
 
   it('B7 solo hay un bloque activo a la vez', () => {
     const t = testCtx()
-    const s = startTimer(state(), { title: 'Uno', minutes: 25 }, t.ctx())
-    expect(startTimer(s, { title: 'Dos', minutes: 25 }, t.ctx())).toBe(s)
-    expect(startBreathing(s, { minutes: 1 }, t.ctx())).toBe(s)
+    const s = startTimer(state(), t.ctx(), { title: 'Uno', minutes: 25 })
+    expect(startTimer(s, t.ctx(), { title: 'Dos', minutes: 25 })).toBe(s)
+    expect(startBreathing(s, t.ctx(), { minutes: 1 })).toBe(s)
   })
 
   it('B9 el título de la pestaña muestra el tiempo solo mientras corre', () => {
     const t = testCtx()
-    const s = startTimer(state(), { title: 'Uno', minutes: 25 }, t.ctx())
+    const s = startTimer(state(), t.ctx(), { title: 'Uno', minutes: 25 })
     expect(tabTitle(s.active, t.now())).toBe('25:00 · Presencia')
     expect(tabTitle(pause(s, t.ctx()).active, t.now())).toBe('Presencia')
     expect(tabTitle(null, t.now())).toBe('Presencia')
@@ -46,7 +46,7 @@ describe('temporizador por endsAt', () => {
 
   it('+5 min suma a lo que queda y cuenta como trabajado', () => {
     const t = testCtx()
-    let s = startTimer(state(), { title: 'Uno', minutes: 5 }, t.ctx())
+    let s = startTimer(state(), t.ctx(), { title: 'Uno', minutes: 5 })
     t.advance(7 * 60_000)
     s = extend(s, t.ctx())
     expect(remainingMs(s.active!, t.now())).toBe(5 * 60_000)
@@ -56,7 +56,7 @@ describe('temporizador por endsAt', () => {
 
   it('terminar antes de tiempo guarda solo los minutos reales', () => {
     const t = testCtx()
-    let s = startTimer(state(), { title: 'Uno', minutes: 25 }, t.ctx())
+    let s = startTimer(state(), t.ctx(), { title: 'Uno', minutes: 25 })
     t.advance(10 * 60_000)
     s = finish(s, t.ctx())
     expect(s.active).toBeNull()
