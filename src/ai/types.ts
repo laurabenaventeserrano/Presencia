@@ -1,23 +1,20 @@
-import type { Block, Memory, Task } from '../store'
-
 export type TaskKind = 'deep' | 'review' | 'admin'
 
-export type BlockKind = 'focus' | 'break' | 'breathe' | 'meditate'
+export type BlockKind = 'focus' | 'break' | 'breathe'
 
-// La IA solo necesita saber cómo se llama cada tarea.
-export type PlanTask = Pick<Task, 'id' | 'title'>
+// La IA solo necesita saber cómo se llama cada cosa.
+export type PlanTask = { id: string; title: string }
 
 export type PlanInput = {
   intention: string
   tasks: PlanTask[]
-  memory: Memory[]
 }
 
 export type ProposedBlock = {
   kind: BlockKind
   minutes: number
   title?: string
-  taskId?: Block['taskId']
+  taskId?: string
 }
 
 export type PlanEvent =

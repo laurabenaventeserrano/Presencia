@@ -144,21 +144,9 @@
   --punto-apagado: #2d333f;
 }
 
-/* Móvil: por debajo de 600 px o en la vista /m */
-[data-device='movil'] {
-  --texto-tiempo: 72px;
-  --texto-titulo: 30px;
-  --pad-arriba: 20px;
-  --pad-lados: 20px;
-  --pad-abajo: 32px;
-  --orb-curso: 120px;
-  --caja-curso: 140px;
-  --orb-resp: 150px;
-  --caja-resp: 220px;
-}
-
+/* Móvil: por debajo de 600 px */
 @media (max-width: 600px) {
-  [data-device='ordenador'] {
+  :root {
     --texto-tiempo: 72px;
     --texto-titulo: 30px;
     --pad-arriba: 20px;
@@ -169,23 +157,6 @@
     --orb-resp: 150px;
     --caja-resp: 220px;
   }
-}
-
-/* Reloj: siempre Noche, todo más compacto */
-[data-device='reloj'] {
-  --texto-tiempo: 44px;
-  --texto-respiracion: 18px;
-  --texto-bloque: 12px;
-  --pantalla-gap: 6px;
-  --pantalla-pad: 12px;
-  --controles-gap: 12px;
-  --cerrar-inset: 8px;
-  --orb-curso: 52px;
-  --caja-curso: 60px;
-  --orb-resp: 84px;
-  --caja-resp: 110px;
-  --punto: 6px;
-  --punto-gap: 6px;
 }
 
 /* Base */

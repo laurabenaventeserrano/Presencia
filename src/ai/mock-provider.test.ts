@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildMessage } from './message'
 import { createMockProvider } from './mock-provider'
-import { buildBlocks } from './rules'
 import type { PlanEvent, PlanInput } from './types'
 
 const instantSleep = () => Promise.resolve()
@@ -13,7 +11,6 @@ const input: PlanInput = {
     { id: 'b', title: 'Diseñar la pantalla' },
     { id: 'c', title: 'Revisar el feedback' },
   ],
-  memory: [],
 }
 
 const collect = async (signal?: AbortSignal) => {
@@ -31,11 +28,6 @@ describe('createMockProvider', () => {
     expect(blocksIndex).toBeGreaterThan(0)
     expect(types.slice(0, blocksIndex).every((type) => type === 'token')).toBe(true)
     expect(types.slice(blocksIndex)).toEqual(['blocks', 'done'])
-  })
-
-  it('los tokens unidos forman exactamente el texto de buildMessage', async () => {
-    const events = await collect()
-    expect(tokenText(events)).toBe(buildMessage(input, buildBlocks(input)))
   })
 
   it("si se cancela a mitad, no emite 'blocks' ni 'done'", async () => {

@@ -1,4 +1,3 @@
-import { buildMessage } from './message'
 import { buildBlocks } from './rules'
 import type { AIProvider } from './types'
 
@@ -20,7 +19,7 @@ const tokenize = (text: string) => text.match(/\S+\s*/g) ?? []
 export const createMockProvider = ({ sleep = defaultSleep }: MockProviderOptions = {}): AIProvider => ({
   async *plan(input, signal) {
     const blocks = buildBlocks(input)
-    const text = buildMessage(input, blocks)
+    const text = `Te propongo ${blocks.filter((block) => block.kind === 'focus').length} bloques.`
 
     for (const token of tokenize(text)) {
       if (signal?.aborted) return

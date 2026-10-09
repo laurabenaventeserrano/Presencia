@@ -47,7 +47,7 @@ describe('minutesFor', () => {
 describe('buildBlocks', () => {
   it('ignora tareas hechas y no deja una pausa después del último bloque', () => {
     const tasks = [task('a', 'Responder emails'), task('b', 'Escribir el artículo'), task('c', 'Revisar el informe')]
-    const blocks = buildBlocks({ intention: '', tasks, memory: [] }, new Set(['c']))
+    const blocks = buildBlocks({ intention: '', tasks }, new Set(['c']))
     expect(blocks).toEqual([
       { kind: 'focus', minutes: 50, title: 'Escribir el artículo', taskId: 'b' },
       { kind: 'break', minutes: 5 },
@@ -63,7 +63,7 @@ describe('buildBlocks', () => {
     task('design', 'Diseñar la pantalla de inicio'),
     task('bills', 'Pagar las facturas del mes'),
   ]
-  const plan = (intention: string) => buildBlocks({ intention, tasks, memory: [] })
+  const plan = (intention: string) => buildBlocks({ intention, tasks })
   const focusMinutes = (blocks: ProposedBlock[]) =>
     blocks.filter((block) => block.kind === 'focus').reduce((total, block) => total + block.minutes, 0)
 
