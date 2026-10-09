@@ -42,3 +42,4 @@
 /* Aviso suave de un bloque aplazado (A12): una tarjeta abajo, sin sonido ni movimiento. */
 .aviso { position: fixed; z-index: 1; right: var(--espacio-4); bottom: var(--espacio-4); left: var(--espacio-4); max-width: var(--columna); margin: 0 auto; padding: var(--espacio-4); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--espacio-3); border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); }
 .aviso__texto { font-size: var(--texto-item); font-weight: var(--peso-ligero); }
+.aviso-fin { display: flex; flex-direction: column; align-items: center; gap: var(--espacio-3); }

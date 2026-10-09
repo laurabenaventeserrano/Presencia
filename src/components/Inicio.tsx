@@ -163,6 +163,9 @@ export function Inicio() {
       onFinish={() => { actions.finish(); setView('hoy') }}
       onHoy={() => setView('hoy')}
       onLater={() => setPostpone({ title: active.title })}
+      onExtend={actions.extend}
+      onBreak={() => { actions.finish(); actions.startBreak() }}
+      onBreathe={() => { actions.finish(); setView('respirar') }}
     />
   } else if (shown === 'respirar') {
     screen = <RespirarElegir onBack={() => setView('hoy')} onStart={(minutes) => { actions.startBreathing({ minutes }); setView('curso') }} />

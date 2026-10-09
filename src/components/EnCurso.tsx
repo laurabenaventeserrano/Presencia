@@ -13,6 +13,9 @@ type EnCursoProps = {
   onFinish: () => void
   onHoy: () => void
   onLater: () => void
+  onExtend: () => void
+  onBreak: () => void
+  onBreathe: () => void
 }
 
 // Lo que oye un lector de pantalla: cada minuto y al terminar, nunca cada segundo (B11).
@@ -22,7 +25,7 @@ export const announcement = (active: ActiveBlock, now: number) => {
   return minutes === 1 ? 'Queda 1 minuto' : `Quedan ${minutes} minutos`
 }
 
-export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy, onLater }: EnCursoProps) {
+export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy, onLater, onExtend, onBreak, onBreathe }: EnCursoProps) {
   const [confirming, setConfirming] = useState(false)
   const ended = isEnded(active, now)
   const running = active.status === 'running'
@@ -51,9 +54,15 @@ export function EnCurso({ active, now, onPause, onResume, onFinish, onHoy, onLat
       <p className="sr-only" aria-live="polite" aria-atomic="true">{announcement(active, now)}</p>
 
       {ended
-        ? <div className="curso__controles">
-          <p className="pantalla__texto">Se acabó el tiempo.</p>
-          <button className="boton boton--oscuro" type="button" onClick={() => onFinish()}>Terminar</button>
+        // Aviso suave al llegar a cero (B6): nada empieza solo, la persona elige.
+        ? <div className="aviso-fin" role="group" aria-labelledby="fin-texto">
+          <p id="fin-texto" className="pantalla__texto">{active.kind === 'break' ? 'Fin del descanso.' : 'Tiempo cumplido.'}</p>
+          <div className="acciones">
+            <button className="boton" type="button" onClick={() => onExtend()}>+5 min</button>
+            {active.kind !== 'break' && <button className="boton" type="button" onClick={() => onBreak()}>Descanso</button>}
+            <button className="boton" type="button" onClick={() => onBreathe()}>Respirar</button>
+            <button className="boton boton--oscuro" type="button" onClick={() => onFinish()}>Terminar</button>
+          </div>
         </div>
         : <div className="curso__controles">
           <button className="boton-icono" type="button" aria-label="Terminar" onClick={() => setConfirming(true)}><Icon name="cerrar" /></button>
