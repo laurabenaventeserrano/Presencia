@@ -9,6 +9,7 @@ test('A6 edito el título de un bloque y Empezar usa el título nuevo', async ({
   await expectNoAxeViolations(page)
   const title = page.getByLabel('Bloque 1', { exact: true })
   await title.fill('Escribir solo el resumen')
+  await expect(title).toHaveValue('Escribir solo el resumen')
   await page.getByRole('button', { name: 'Empezar Escribir solo el resumen' }).click()
   await expect(page.getByRole('heading', { name: 'Escribir solo el resumen' })).toBeVisible()
 })
