@@ -72,7 +72,7 @@ test('B7 con un bloque en marcha no se puede empezar otro', async ({ page }) => 
   await startTimer(page, 25)
   await page.getByRole('button', { name: 'Hoy' }).click()
   await expect(page.getByRole('button', { name: 'Temporizador' })).toBeDisabled()
-  await expect(page.getByRole('button', { name: 'Respirar' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Respirar', exact: true })).toBeDisabled()
   await expect(page.getByText('Ya hay un bloque en marcha')).toBeVisible()
   await page.getByRole('button', { name: 'Ir al bloque' }).click()
   await expect(timeText(page)).toBeVisible()

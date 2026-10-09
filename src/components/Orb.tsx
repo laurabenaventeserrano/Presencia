@@ -16,12 +16,25 @@ type OrbProps = {
   size: 'hoy' | 'curso' | 'resp'
   // La deriva completa solo con el timer en marcha; si no, casi quieto.
   active?: boolean
+  // Respirar: el orbe se detiene en pausa y arranca su ciclo en el punto que toca.
+  paused?: boolean
+  cycleOffsetMs?: number
 }
 
-export function Orb({ state, size, active = false }: OrbProps) {
+const labels: Record<OrbState, string> = {
+  reposo: 'Orbe en reposo',
+  escucha: 'Orbe escuchando',
+  foco: 'Orbe en foco',
+  pausa: 'Orbe en pausa',
+  hecho: 'Orbe: hecho',
+  respirar: 'Orbe respirando',
+}
+
+export function Orb({ state, size, active = false, paused = false, cycleOffsetMs }: OrbProps) {
   const motion = state === 'respirar' ? 'respira' : active ? 'deriva' : 'quieto'
+  const style = cycleOffsetMs === undefined ? undefined : { animationDelay: `-${cycleOffsetMs}ms` }
   return (
-    <div className={`orbe orbe--${size}`} data-motion={motion} role="img" aria-label="Orbe">
+    <div className={`orbe orbe--${size}`} data-motion={motion} data-paused={paused || undefined} style={style} role="img" aria-label={labels[state]}>
       <div className="orbe__luz">
         {palette[state].map((color, index) => (
           <span key={index} className="orbe__mancha" style={{ background: `var(--orbe-${color})` }} />

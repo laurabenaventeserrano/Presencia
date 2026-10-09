@@ -118,6 +118,8 @@
   /* Piezas que DESIGN.md no define (decisiones de diseño pendientes) */
   --velo: color-mix(in srgb, var(--tinta) 24%, transparent);
   --ancho-minutos-campo: 6ch;
+  /* SPEC R2: 5 s para coger aire y 5 s para soltarlo; el ciclo completo del orbe dura el doble. */
+  --ciclo-respiracion: calc(var(--respiracion) * 2);
 }
 
 /* Color · Noche (sistema, salvo que la pantalla fije Día) */

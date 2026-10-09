@@ -5,9 +5,10 @@ import { tabTitle } from '../time'
 import { useNow } from '../hooks/useNow'
 import { EnCurso } from './EnCurso'
 import { Hoy } from './Hoy'
+import { RespirarElegir, RespirarGuia } from './Respirar'
 import { Temporizador } from './Temporizador'
 
-type View = 'hoy' | 'temporizador' | 'curso'
+type View = 'hoy' | 'temporizador' | 'respirar' | 'curso'
 
 // Casi todo ocurre en esta página: Hoy, el temporizador y el bloque en curso.
 export function Inicio() {
@@ -28,6 +29,21 @@ export function Inicio() {
   // El tiempo restante en el título de la pestaña (B9).
   useEffect(() => { document.title = tabTitle(active, now) }, [active, now])
 
+  if (shown === 'curso' && active?.kind === 'breathe') {
+    return <RespirarGuia
+      active={active}
+      now={now}
+      onPause={actions.pause}
+      onResume={actions.resume}
+      onFinish={() => { actions.finish(); setView('hoy') }}
+      onHoy={() => setView('hoy')}
+    />
+  }
+
+  if (shown === 'respirar') {
+    return <RespirarElegir onBack={() => setView('hoy')} onStart={(minutes) => { actions.startBreathing({ minutes }); setView('curso') }} />
+  }
+
   if (shown === 'curso' && active) {
     return <EnCurso
       active={active}
@@ -47,7 +63,7 @@ export function Inicio() {
     active={active}
     now={now}
     onTimer={() => setView('temporizador')}
-    onBreath={() => undefined}
+    onBreath={() => setView('respirar')}
     onGoToBlock={() => setView('curso')}
   />
 }

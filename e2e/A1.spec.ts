@@ -3,7 +3,7 @@ import { expectNoAxeViolations, open } from './helpers'
 
 test('A1 Hoy empieza casi vacía', async ({ page }) => {
   await open(page)
-  await expect(page.getByRole('img', { name: 'Orbe' })).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Orbe en reposo' })).toBeVisible()
   await expect(page.getByLabel('¿Qué necesitas hacer hoy?')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Temporizador' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Respirar' })).toBeVisible()
