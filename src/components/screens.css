@@ -15,15 +15,15 @@
 .nota { color: var(--secundario); font-size: var(--texto-secundario); text-align: center; }
 
 /* Franja del bloque en marcha, arriba de Hoy (B8). */
-.franja { width: 100%; min-height: var(--control-fila); display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); padding: 0 var(--espacio-4); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); text-align: start; transition: opacity var(--transicion); }
-.franja:hover { opacity: var(--opacidad-hover); }
+.franja { position: relative; z-index: 1; width: 100%; min-height: var(--control-fila); display: flex; align-items: center; justify-content: space-between; gap: var(--espacio-3); padding: 0 var(--espacio-4); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--tarjeta); box-shadow: var(--sombra-tarjeta); text-align: start; transition: background var(--transicion); }
+.franja:hover { background: var(--suave); }
 .franja__titulo { min-width: 0; font-size: var(--texto-item); font-weight: var(--peso-ligero); overflow-wrap: anywhere; }
 .franja__tiempo { flex: none; color: var(--secundario); font-size: var(--texto-secundario); font-variant-numeric: tabular-nums; }
 
 /* Formularios del temporizador y de Respirar. */
 .formulario { width: 100%; max-width: var(--columna); display: flex; flex-direction: column; align-items: stretch; gap: var(--pantalla-gap); }
 .campo-etiqueta { display: flex; flex-direction: column; gap: var(--espacio-2); color: var(--secundario); font-size: var(--texto-etiqueta); }
-.campo-simple { width: 100%; height: var(--control-fila); padding: 0 var(--espacio-4); border: 0; border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--pastilla); font-size: var(--texto-campo); font-weight: var(--peso-normal); }
+.campo-simple { width: 100%; height: var(--control-fila); padding: 0 var(--espacio-4); border: var(--linea) solid var(--linea-campo); border-radius: var(--radio-tarjeta); color: var(--tinta); background: var(--pastilla); font-size: var(--texto-campo); font-weight: var(--peso-normal); }
 .campo-simple::placeholder { color: var(--secundario); }
 .opciones { display: flex; flex-wrap: wrap; gap: var(--espacio-2); }
 .boton[aria-pressed='true'] { color: var(--sobre-oscuro); background: var(--boton-oscuro); }

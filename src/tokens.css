@@ -119,6 +119,8 @@
   --velo: color-mix(in srgb, var(--tinta) 24%, transparent);
   --ancho-minutos-campo: 6ch;
   --ancho-titulo-fila: 220px;
+  /* Accesibilidad (G3): el borde de los campos contrasta al menos 3:1 con lo que los rodea. */
+  --linea-campo: #7f8695;
   /* SPEC R2: 5 s para coger aire y 5 s para soltarlo; el ciclo completo del orbe dura el doble. */
   --ciclo-respiracion: calc(var(--respiracion) * 2);
 }
@@ -135,6 +137,7 @@
     --secundario: #9aa3b2;
     --sobre-oscuro: #0e1014;
     --punto-apagado: #2d333f;
+    --linea-campo: #6b7385;
   }
 }
 
@@ -149,6 +152,7 @@
   --boton-oscuro: var(--tinta);
   --sobre-oscuro: #0e1014;
   --punto-apagado: #2d333f;
+  --linea-campo: #6b7385;
 }
 
 /* Móvil: por debajo de 600 px */

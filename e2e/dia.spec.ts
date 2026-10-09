@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ask, expectNoAxeViolations, open, rowSummaries, timeText } from './helpers'
+import { ask, expectNoAxeViolations, open, pauseClock, rowSummaries, timeText } from './helpers'
 
 const INTENT = 'escribir la propuesta, revisar correos y llamar a Marta'
 
@@ -49,7 +49,7 @@ test('A12 aplazo un bloque a más tarde y a esa hora aparece un aviso suave', as
 test('A13 al cambiar el día, la lista de ayer ya no aparece', async ({ page }) => {
   await page.clock.install({ time: new Date('2026-10-09T23:58:00+02:00') })
   await page.goto('/')
-  await page.clock.pauseAt(new Date('2026-10-09T23:58:01+02:00'))
+  await pauseClock(page)
   await ask(page, INTENT)
   await page.getByRole('button', { name: 'Más tarde Llamar a Marta' }).click()
   await page.getByRole('dialog').getByRole('button', { name: '15 minutos' }).click()

@@ -9,7 +9,14 @@ export const NOW = new Date('2026-10-09T10:00:00+02:00')
 export const open = async (page: Page, path = '/') => {
   await page.clock.install({ time: NOW })
   await page.goto(path)
-  await page.clock.pauseAt(new Date(NOW.getTime() + 1000))
+  await pauseClock(page)
+}
+
+// Para el reloj un segundo después de la hora que marque la página ahora mismo
+// (con muchas pruebas en paralelo, la carga puede tardar más de un segundo).
+export const pauseClock = async (page: Page) => {
+  const now = await page.evaluate(() => Date.now())
+  await page.clock.pauseAt(new Date(now + 1000))
 }
 
 // axe sin violaciones de WCAG 2.2 A y AA.
@@ -17,8 +24,7 @@ export const open = async (page: Page, path = '/') => {
 export const expectNoAxeViolations = async (page: Page) => {
   await page.clock.resume()
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze()
-  const now = await page.evaluate(() => Date.now())
-  await page.clock.pauseAt(new Date(now + 1000))
+  await pauseClock(page)
   expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([])
 }
 
