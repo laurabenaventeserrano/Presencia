@@ -55,3 +55,24 @@
 /* «Ver lo que hace la IA» (E4). */
 .traza { display: flex; flex-direction: column; gap: var(--espacio-2); color: var(--secundario); font-size: var(--texto-secundario); }
 .traza__detalle { overflow-x: auto; margin: 0; padding: var(--espacio-3); border-radius: var(--radio-boton); color: var(--tinta); background: var(--pastilla); font-size: var(--texto-etiqueta); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Días: la cuadrícula (D). Cuadrados de esquinas suaves y poca separación, para que se lea como un dibujo. */
+.dias__marco { width: 100%; max-width: 100%; overflow-x: auto; padding: var(--espacio-1); }
+.dias { display: grid; gap: var(--dia-gap); width: max-content; margin: 0 auto; }
+.dias__fila { display: grid; grid-auto-flow: column; grid-auto-columns: var(--dia); gap: var(--dia-gap); }
+.dia { width: var(--dia); height: var(--dia); border-radius: var(--dia-radio); background: var(--nivel-0); }
+.dia[data-level='0'] { box-shadow: inset 0 0 0 var(--linea) var(--dia-contorno); }
+.dia[data-level='1'] { background: var(--nivel-1); }
+.dia[data-level='2'] { background: var(--nivel-2); }
+.dia[data-level='3'] { background: var(--nivel-3); }
+.dia[data-level='4'] { background: var(--nivel-4); }
+.dia[data-level='5'] { background: var(--nivel-5); }
+.dia[aria-selected='true'] { outline: var(--foco-ancho) solid var(--secundario); outline-offset: var(--linea); }
+.dia:focus-visible { outline: var(--foco-ancho) solid var(--tinta); outline-offset: var(--linea); }
+.dia--futuro { visibility: hidden; }
+.leyenda { display: flex; align-items: center; gap: var(--dia-gap); color: var(--secundario); font-size: var(--texto-secundario); }
+.leyenda span:first-child { margin-right: var(--espacio-2); }
+.leyenda span:last-child { margin-left: var(--espacio-2); }
+.dias__detalle { font-size: var(--texto-item); font-weight: var(--peso-ligero); }
+.dias__ejemplo { text-align: center; }
+.pantalla--ancha { max-width: var(--columna-ancha); }

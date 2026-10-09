@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Ajustes } from './components/Ajustes'
+import { Dias } from './components/Dias'
 import { Inicio } from './components/Inicio'
-import { Seccion } from './components/Seccion'
 import './components/controls.css'
 import './components/screens.css'
 
@@ -10,7 +10,7 @@ function App() {
     <main className="app">
       <Routes>
         <Route path="/" element={<Inicio />} />
-        <Route path="/dias" element={<Seccion title="Días"><p className="pantalla__texto">Muy pronto.</p></Seccion>} />
+        <Route path="/dias" element={<Dias />} />
         <Route path="/ajustes" element={<Ajustes />} />
         <Route path="/app" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

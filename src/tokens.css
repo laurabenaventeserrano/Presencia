@@ -121,6 +121,20 @@
   --ancho-titulo-fila: 220px;
   /* Accesibilidad (G3): el borde de los campos contrasta al menos 3:1 con lo que los rodea. */
   --linea-campo: #7f8695;
+
+  /* Días (SPEC D2): un solo tono, el coral del orbe en reposo, de blanco a oscuro.
+     DESIGN.md reserva el color al orbe; SPEC manda aquí (decisión de diseño pendiente). */
+  --dia: 24px;
+  --dia-gap: 2px;
+  --columna-ancha: 1400px;
+  --dia-radio: var(--radio-boton);
+  --nivel-0: var(--tarjeta);
+  --nivel-1: color-mix(in oklab, var(--orbe-coral) 28%, var(--tarjeta));
+  --nivel-2: color-mix(in oklab, var(--orbe-coral) 55%, var(--tarjeta));
+  --nivel-3: var(--orbe-coral);
+  --nivel-4: color-mix(in oklab, var(--orbe-coral) 72%, var(--tinta));
+  --nivel-5: color-mix(in oklab, var(--orbe-coral) 45%, var(--tinta));
+  --dia-contorno: var(--linea-campo);
   /* SPEC R2: 5 s para coger aire y 5 s para soltarlo; el ciclo completo del orbe dura el doble. */
   --ciclo-respiracion: calc(var(--respiracion) * 2);
 }
@@ -138,6 +152,8 @@
     --sobre-oscuro: #0e1014;
     --punto-apagado: #2d333f;
     --linea-campo: #6b7385;
+    --nivel-4: color-mix(in oklab, var(--orbe-coral) 75%, white);
+    --nivel-5: color-mix(in oklab, var(--orbe-coral) 45%, white);
   }
 }
 
@@ -153,6 +169,8 @@
   --sobre-oscuro: #0e1014;
   --punto-apagado: #2d333f;
   --linea-campo: #6b7385;
+  --nivel-4: color-mix(in oklab, var(--orbe-coral) 75%, white);
+  --nivel-5: color-mix(in oklab, var(--orbe-coral) 45%, white);
 }
 
 /* Móvil: por debajo de 600 px */

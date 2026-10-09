@@ -2,6 +2,7 @@ import type { AppState, Ctx } from '../state/types'
 import { saveState } from '../storage'
 import { useAppStore } from '../store'
 import { localDate } from '../time'
+import * as data from './data'
 import * as plan from './plan'
 import * as settings from './settings'
 import * as timer from './timer'
@@ -23,6 +24,9 @@ const run = <A extends unknown[]>(action: (state: AppState, ctx: Ctx, ...args: A
   (...args: A) => commit(action(useAppStore.getState(), ctx(), ...args))
 
 export const actions = {
+  loadExample: run(data.loadExample),
+  removeExample: run(data.removeExample),
+  clearData: run(data.clearData),
   setSetting: run(settings.setSetting),
   createPlan: run(plan.createPlan),
   updateItem: run(plan.updateItem),
