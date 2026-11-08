@@ -25,3 +25,9 @@ describe('X3 todo cambio de estado pasa por src/actions', () => {
     expect(outside(/localStorage/, './storage/')).toEqual([])
   })
 })
+
+describe('los iconos salen de un solo repositorio', () => {
+  it('solo src/components/Icon.tsx importa lucide-react', () => {
+    expect(outside(/from 'lucide-react'/, './components/Icon.tsx')).toEqual([])
+  })
+})
